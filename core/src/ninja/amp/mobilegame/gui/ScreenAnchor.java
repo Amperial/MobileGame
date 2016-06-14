@@ -1,4 +1,4 @@
-package ninja.amp.mobilegame.menus;
+package ninja.amp.mobilegame.gui;
 
 import com.badlogic.gdx.Gdx;
 

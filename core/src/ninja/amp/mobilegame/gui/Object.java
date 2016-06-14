@@ -1,5 +1,6 @@
-package ninja.amp.mobilegame.menus;
+package ninja.amp.mobilegame.gui;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Object implements Anchor {
@@ -88,5 +89,14 @@ public abstract class Object implements Anchor {
     public float getScreenHeight() {
         return getHeight() * scale;
     }
+
+    public boolean contains(float x, float y) {
+        float minX = getScreenX();
+        float minY = getScreenY();
+
+        return x >= minX && x <= minX + getScreenWidth() && y >= minY && y <= minY + getScreenHeight();
+    }
+
+    public abstract void draw(Batch batch);
 
 }

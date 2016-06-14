@@ -14,6 +14,17 @@ public class RectangleLimit implements Limit<Vector2> {
     @Override
     public void apply(Vector2 value) {
         // TODO
+        value.x = clamp(value.x, rectangle.getX(), rectangle.getX() + rectangle.getWidth());
+        value.y = clamp(value.y, rectangle.getY(), rectangle.getY() + rectangle.getHeight());
     }
 
+    private float clamp(float value, float min, float max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        } else {
+            return value;
+        }
+    }
 }

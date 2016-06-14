@@ -22,6 +22,7 @@ public class MobileGame extends Game {
         
 
         this.setScreen(new MainMenuScreen(this));
+        
 	}
 
     @Override

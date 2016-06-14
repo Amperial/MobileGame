@@ -1,13 +1,19 @@
-package ninja.amp.mobilegame.menus;
+package ninja.amp.mobilegame.gui.buttons;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.gui.Anchor;
+import ninja.amp.mobilegame.gui.Object;
+import ninja.amp.mobilegame.gui.Origin;
 
 public class Button extends Object {
 
     private TextureRegion texture;
+    private int pressed = -1;
+    private int hovered = -1;
 
     public Button(TextureRegion texture, Anchor anchor, Origin origin, Vector2 offset) {
         super(anchor, origin, offset);
@@ -29,6 +35,9 @@ public class Button extends Object {
         this.texture = texture;
     }
 
+    public TextureRegion getTexture() {
+        return texture;
+    }
 
     @Override
     public float getWidth() {
@@ -40,18 +49,36 @@ public class Button extends Object {
         return texture.getRegionHeight();
     }
 
-    public boolean contains(float x, float y) {
-        float minX = getScreenX();
-        float minY = getScreenY();
+    @Override
+    public void draw(Batch batch) {
+        batch.draw(texture, getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
+    }
 
-        return x >= minX && x <= minX + getScreenWidth() && y >= minY && y <= minY + getScreenHeight();
+    public void setPressed(int pointer) {
+        this.pressed = pointer;
+    }
+
+    public boolean isPressed(int pointer) {
+        return pressed == pointer;
+    }
+
+    public boolean isPressed() {
+        return pressed >= 0;
+    }
+
+    public void setHovered(int pointer) {
+        this.hovered = pointer;
+    }
+
+    public boolean isHovered(int pointer) {
+        return hovered == pointer;
+    }
+
+    public boolean isHovered() {
+        return hovered >= 0;
     }
 
     public void click() {
-    }
-
-    public void draw(Batch batch) {
-        batch.draw(texture, getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
     }
 
 }

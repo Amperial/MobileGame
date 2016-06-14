@@ -2,6 +2,7 @@ package ninja.amp.mobilegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,10 +14,11 @@ import ninja.amp.mobilegame.background.Background;
 import ninja.amp.mobilegame.background.BackgroundGroup;
 import ninja.amp.mobilegame.background.BackgroundLayer;
 import ninja.amp.mobilegame.background.TileMode;
-import ninja.amp.mobilegame.menus.Button;
-import ninja.amp.mobilegame.menus.Menu;
-import ninja.amp.mobilegame.menus.ScreenAnchor;
-import ninja.amp.mobilegame.menus.Origin;
+import ninja.amp.mobilegame.gui.buttons.Button;
+import ninja.amp.mobilegame.gui.Menu;
+import ninja.amp.mobilegame.gui.ScreenAnchor;
+import ninja.amp.mobilegame.gui.Origin;
+import ninja.amp.mobilegame.gui.buttons.PressableButton;
 
 import java.util.HashMap;
 
@@ -34,17 +36,21 @@ public class MainMenuScreen implements Screen {
     private Texture background1 = new Texture(Gdx.files.internal("background/Ocean_1.png"));
     private Texture background2 = new Texture(Gdx.files.internal("background/Ocean_2.png"));
     private Texture play = new Texture(Gdx.files.internal("gui/buttons/play.png"));
+    private Texture play_pressed = new Texture(Gdx.files.internal("gui/buttons/play_pressed.png"));
     private Texture credits = new Texture(Gdx.files.internal("gui/buttons/credits.png"));
+    private Texture credits_pressed = new Texture(Gdx.files.internal("gui/buttons/credits_pressed.png"));
     private Texture gear = new Texture(Gdx.files.internal("gui/buttons/gear.png"));
+    private Texture gear_pressed = new Texture(Gdx.files.internal("gui/buttons/gear_pressed.png"));
     private Texture trophy = new Texture(Gdx.files.internal("gui/buttons/trophy.png"));
+    private Texture trophy_pressed = new Texture(Gdx.files.internal("gui/buttons/trophy_pressed.png"));
     private Texture facebook = new Texture(Gdx.files.internal("gui/buttons/facebook.png"));
     private Texture twitter = new Texture(Gdx.files.internal("gui/buttons/twitter.png"));
 
-    float x = 0;
-    float y = 0;
+    private Music music;
+
     FPSLogger log;
 
-    public MainMenuScreen(MobileGame game) {
+    public MainMenuScreen(final MobileGame game) {
         this.game = game;
         
         // TODO: Replace textures with texture atlas
@@ -60,13 +66,13 @@ public class MainMenuScreen implements Screen {
         Menu settingsMenu = new Menu();
         Menu achievementsMenu = new Menu();
         
-        Button settingsButton = new Button(new TextureRegion(gear), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new Vector2(1, 1)) {
+        Button settingsButton = new PressableButton(new TextureRegion(gear), new TextureRegion(gear_pressed), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new Vector2(1, 1)) {
             @Override
             public void click() {
                 //setActiveMenu(menus.get("settings"));
             }
         };
-        Button achievementsButton = new Button(new TextureRegion(trophy), settingsButton, Origin.BOTTOM_LEFT, new Vector2(gear.getWidth(), 0)) {
+        Button achievementsButton = new PressableButton(new TextureRegion(trophy), new TextureRegion(trophy_pressed), settingsButton, Origin.BOTTOM_LEFT, new Vector2(gear.getWidth(), 0)) {
             @Override
             public void click() {
                 //setActiveMenu(menus.get("achievements"));
@@ -74,16 +80,17 @@ public class MainMenuScreen implements Screen {
         };
         Button twitterButton = new Button(new TextureRegion(twitter), new ScreenAnchor(1, 0), Origin.BOTTOM_RIGHT, new Vector2(-1, 1));
         Button facebookButton = new Button(new TextureRegion(facebook), twitterButton, Origin.BOTTOM_RIGHT, new Vector2(-twitter.getWidth(), 0));
-        Button creditsButton = new Button(new TextureRegion(credits), new ScreenAnchor(0.5f, 0), Origin.BOTTOM, new Vector2(0, 1)) {
+        Button creditsButton = new PressableButton(new TextureRegion(credits), new TextureRegion(credits_pressed), new ScreenAnchor(0.5f, 0), Origin.BOTTOM, new Vector2(0, 1)) {
             @Override
             public void click() {
                 //setActiveMenu(menus.get("credits"));
             }
         };
-        Button playButton = new Button(new TextureRegion(play), creditsButton, Origin.BOTTOM, new Vector2(0, credits.getHeight())) {
+        Button playButton = new PressableButton(new TextureRegion(play), new TextureRegion(play_pressed), creditsButton, Origin.BOTTOM, new Vector2(0, credits.getHeight())) {
             @Override
             public void click() {
-                //setActiveMenu(menus.get("play"));
+                game.setScreen(new GameScreen(game));
+                dispose();
             }
         };
         Menu mainMenu = new Menu(settingsButton, achievementsButton, twitterButton, facebookButton, creditsButton, playButton);
@@ -99,6 +106,18 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         
+        //music = Gdx.audio.newMusic(Gdx.files.internal("music/mainmenu.mp3"));
+        //music.setVolume(0.1f);
+        //music.play();
+        //music.setPosition(200f);
+        //music.setOnCompletionListener(new Music.OnCompletionListener() {
+        //    @Override
+        //    public void onCompletion(Music music) {
+        //        music.play();
+        //        //music.setPosition(200f);
+        //    }
+        //});
+        
         log = new FPSLogger();
     }
 
@@ -113,8 +132,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        log.log();
-        x += delta * 10;
+        //log.log();
         
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -122,7 +140,7 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         
-        background.draw(game.batch, x, y, camera.viewportWidth, camera.viewportHeight);
+        background.draw(game.batch, camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
         
         activeMenu.draw(game.batch);
         
@@ -141,10 +159,12 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void pause() {
+        //music.pause();
     }
 
     @Override
     public void resume() {
+        //music.play();
     }
 
     @Override
@@ -162,6 +182,7 @@ public class MainMenuScreen implements Screen {
         trophy.dispose();
         facebook.dispose();
         twitter.dispose();
+        //music.dispose();
     }
 
 }

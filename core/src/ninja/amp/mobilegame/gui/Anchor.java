@@ -1,4 +1,4 @@
-package ninja.amp.mobilegame.menus;
+package ninja.amp.mobilegame.gui;
 
 /**
  * Represents something which objects can be bound to for rendering.

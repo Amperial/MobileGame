@@ -1,8 +1,9 @@
-package ninja.amp.mobilegame.menus;
+package ninja.amp.mobilegame.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import ninja.amp.mobilegame.gui.buttons.Button;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,15 +45,31 @@ public class Menu implements InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int b) {
-        return false;
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        for (Button b : buttons) {
+            if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+                if (!b.isPressed()) {
+                    b.setPressed(pointer);
+                }
+                if (!b.isHovered()) {
+                    b.setHovered(pointer);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int b) {
-        for (Button button : buttons) {
-            if (button.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
-                button.click();
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        for (Button b : buttons) {
+            if (b.isPressed(pointer)) {
+                b.setPressed(-1);
+                if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+                    b.click();
+                }
+            }
+            if (b.isHovered(pointer)) {
+                b.setHovered(-1);
             }
         }
         return true;
@@ -60,7 +77,16 @@ public class Menu implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+        for (Button b : buttons) {
+            if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+                if (!b.isHovered()) {
+                    b.setHovered(pointer);
+                }
+            } else if (b.isHovered(pointer)) {
+                b.setHovered(-1);
+            }
+        }
+        return true;
     }
 
     @Override
