@@ -1,17 +1,18 @@
 package ninja.amp.mobilegame.objects.characters.npc;
 
-import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.map.World;
-import ninja.amp.mobilegame.objects.characters.Character;
+import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.characters.npc.ai.Agent;
-import ninja.amp.mobilegame.physics.vectors.LVector2;
+import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 
-public abstract class NPC extends Character implements Agent {
+public abstract class NPC extends Entity implements Agent {
 
     private State state;
 
-    public NPC(World world, Vector2 position, LVector2 velocity, LVector2 acceleration, float mass, State state) {
-        super(world, position, velocity, acceleration, mass);
+    public NPC(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, State state, Hitbox hitbox) {
+        super(world, position, velocity, acceleration, mass, hitbox);
         this.state = state;
     }
 

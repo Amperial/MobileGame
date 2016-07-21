@@ -1,107 +1,86 @@
 package ninja.amp.mobilegame.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.MobileGame;
-import ninja.amp.mobilegame.background.Background;
-import ninja.amp.mobilegame.background.BackgroundGroup;
-import ninja.amp.mobilegame.background.BackgroundLayer;
-import ninja.amp.mobilegame.background.TileMode;
-import ninja.amp.mobilegame.gui.buttons.HoverableButton;
-import ninja.amp.mobilegame.gui.buttons.PressableButton;
+import ninja.amp.mobilegame.engine.background.Background;
+import ninja.amp.mobilegame.engine.background.BackgroundGroup;
+import ninja.amp.mobilegame.engine.background.BackgroundLayer;
+import ninja.amp.mobilegame.engine.background.TileMode;
+import ninja.amp.mobilegame.engine.gui.buttons.HoverableButton;
+import ninja.amp.mobilegame.engine.gui.buttons.PressableButton;
+import ninja.amp.mobilegame.engine.resources.texture.*;
 import ninja.amp.mobilegame.map.World;
-import ninja.amp.mobilegame.gui.buttons.Button;
-import ninja.amp.mobilegame.gui.Menu;
-import ninja.amp.mobilegame.gui.Origin;
-import ninja.amp.mobilegame.gui.ScreenAnchor;
-import ninja.amp.mobilegame.physics.forces.Force;
-import ninja.amp.mobilegame.physics.forces.Impulse;
-import ninja.amp.mobilegame.physics.forces.SimpleForce;
+import ninja.amp.mobilegame.engine.gui.buttons.Button;
+import ninja.amp.mobilegame.engine.gui.Menu;
+import ninja.amp.mobilegame.engine.gui.Origin;
+import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
 
-import java.util.HashMap;
-
-public class GameScreen implements Screen {
-
-    private MobileGame game;
-    private OrthographicCamera camera;
+public class GameScreen extends Screen {
+    
+    private Texture background0 = new SingleTexture(Gdx.files.internal("background/Ocean_0.png"), this);
+    private Texture background1 = new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this);
+    private Texture background2 = new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this);
 
     private Background background;
 
-    private Menu activeMenu;
-    private HashMap<String, Menu> menus = new HashMap<String, Menu>();
-    
-    private Texture background0 = new Texture(Gdx.files.internal("background/Ocean_0.png"));
-    private Texture background1 = new Texture(Gdx.files.internal("background/Ocean_1.png"));
-    private Texture background2 = new Texture(Gdx.files.internal("background/Ocean_2.png"));
-    private Texture left = new Texture(Gdx.files.internal("gui/controls/left.png"));
-    private Texture left_pressed = new Texture(Gdx.files.internal("gui/controls/left_pressed.png"));
-    private Texture right = new Texture(Gdx.files.internal("gui/controls/right.png"));
-    private Texture right_pressed = new Texture(Gdx.files.internal("gui/controls/right_pressed.png"));
-    private Texture up = new Texture(Gdx.files.internal("gui/controls/up.png"));
-    private Texture up_pressed = new Texture(Gdx.files.internal("gui/controls/up_pressed.png"));
-    private Texture control = new Texture(Gdx.files.internal("gui/controls/control.png"));
-    private Texture control_pressed = new Texture(Gdx.files.internal("gui/controls/control_pressed.png"));
-    private Texture pause = new Texture(Gdx.files.internal("gui/pause.png"));
-    private Texture play = new Texture(Gdx.files.internal("gui/play.png"));
+    private Texture left, left_pressed, right, right_pressed, up, up_pressed, control, control_pressed, pause, play, controls, resume, quit, larger_pressed;
+
+    private Button playButton;
+    private boolean paused = false;
     
     private World world;
 
-    private boolean paused = false;
+    public GameScreen(final MobileGame game) {
+        super(game);
 
-    FPSLogger log;
+        Background sky = new BackgroundLayer(background0, new Vector2(1f, 0f), TileMode.REPEAT_X);
+        Background land = new BackgroundLayer(background1, new Vector2(5f, 2f),TileMode.REPEAT_X);
+        Background water = new BackgroundLayer(background2, new Vector2(10f, 1f), TileMode.REPEAT_X);
 
-    public GameScreen(MobileGame game) {
-        this.game = game;
-        
-        // TODO: Replace textures with texture atlas
-        
-        Background sky = new BackgroundLayer(new TextureRegion(background0), new Vector2(1f, 0f), TileMode.REPEAT_X);
-        Background land = new BackgroundLayer(new TextureRegion(background1), new Vector2(5f, 0f),TileMode.REPEAT_X);
-        final Background water = new BackgroundLayer(new TextureRegion(background2), new Vector2(10f, 0f), TileMode.REPEAT_X);
+        Atlas gui = new Atlas(Gdx.files.internal("gui.pack"), this);
+        left = new RegionTexture(gui.findRegion("controls/left"), this);
+        left_pressed = new RegionTexture(gui.findRegion("controls/left_pressed"), this);
+        right = new RegionTexture(gui.findRegion("controls/right"), this);
+        right_pressed = new RegionTexture(gui.findRegion("controls/right_pressed"), this);
+        up = new RegionTexture(gui.findRegion("controls/up"), this);
+        up_pressed = new RegionTexture(gui.findRegion("controls/up_pressed"), this);
+        control = new RegionTexture(gui.findRegion("controls/control"), this);
+        control_pressed = new RegionTexture(gui.findRegion("controls/control_pressed"), this);
+        pause = new RegionTexture(gui.findRegion("pause"), this);
+        play = new RegionTexture(gui.findRegion("play"), this);
+        controls = new RegionTexture(gui.findRegion("buttons/controls"), this);
+        resume = new RegionTexture(gui.findRegion("buttons/resume"), this);
+        quit = new RegionTexture(gui.findRegion("buttons/quit"), this);
+        larger_pressed = new RegionTexture(gui.findRegion("buttons/larger_pressed"), this);
         background = new BackgroundGroup(sky, land, water);
-        
-        Button leftButton = new HoverableButton(new TextureRegion(left), new TextureRegion(left_pressed), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new Vector2(1, 1)) {
-            Force left = new SimpleForce(new Vector2(-1000, 0), false);
+
+        Button leftButton = new HoverableButton(left, left_pressed, new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new Vector2(1, 1)) {
             @Override
             public void setHovered(int pointer) {
                 super.setHovered(pointer);
-                if (isHovered()) {
-                    world.addForce("left", left);
-                } else {
-                    world.removeForce("left");
-                }
+                // TODO: Left
             }
         };
-        Button rightButton = new HoverableButton(new TextureRegion(right), new TextureRegion(right_pressed), leftButton, Origin.BOTTOM_LEFT, new Vector2(left.getWidth(), 0)) {
-            Force right = new SimpleForce(new Vector2(1000, 0), false);
+        Button rightButton = new HoverableButton(right, right_pressed, leftButton, Origin.BOTTOM_LEFT, new Vector2(left.getRegion().getRegionWidth(), 0)) {
             @Override
             public void setHovered(int pointer) {
                 super.setHovered(pointer);
-                if (isHovered()) {
-                    world.addForce("right", right);
-                } else {
-                    world.removeForce("right");
-                }
+                // TODO: Right
             }
         };
-        Button upButton = new PressableButton(new TextureRegion(up), new TextureRegion(up_pressed), new ScreenAnchor(1, 0), Origin.BOTTOM_RIGHT, new Vector2(-1, 1)) {
-            Force up = new Impulse(new Vector2(0, 1000000));
+        Button upButton = new PressableButton(up, up_pressed, new ScreenAnchor(1, 0), Origin.BOTTOM_RIGHT, new Vector2(-1, 1)) {
             @Override
             public void setPressed(int pressed) {
                 super.setPressed(pressed);
-                if (isPressed() && world.getCharacter().getVelocity().y < 1000) {
-                    world.getCharacter().getVelocity().y = 1000;
+                if (isPressed()) {
+                    // TODO: Jump
                 }
             }
         };
-        Button controlButton = new PressableButton(new TextureRegion(control), new TextureRegion(control_pressed), upButton, Origin.BOTTOM_RIGHT, new Vector2(-up.getWidth(), 0));
-        Button pauseButton = new Button(new TextureRegion(pause), new ScreenAnchor(1, 1), Origin.TOP_RIGHT, new Vector2(-1, -1)) {
+        Button controlButton = new PressableButton(control, control_pressed, upButton, Origin.BOTTOM_RIGHT, new Vector2(-up.getRegion().getRegionWidth(), 0));
+        Button pauseButton = new Button(pause, new ScreenAnchor(1, 1), Origin.TOP_RIGHT, new Vector2(-1, -1)) {
             @Override
             public void click() {
                 paused = true;
@@ -110,31 +89,36 @@ public class GameScreen implements Screen {
         };
         Menu controlMenu = new Menu(leftButton, rightButton, upButton, controlButton, pauseButton);
         
-        Button playButton = new Button(new TextureRegion(play), new ScreenAnchor(1, 1), Origin.TOP_RIGHT, new Vector2(-1, -1)) {
+        playButton = new Button(play, new ScreenAnchor(1, 1), Origin.TOP_RIGHT, new Vector2(-1, -1)) {
             @Override
             public void click() {
                 paused = false;
                 setActiveMenu(menus.get("control"));
             }
         };
-        Menu pauseMenu = new Menu(playButton);
-        
-        menus.put("control", controlMenu);
-        menus.put("pause", pauseMenu);
-        
+        Button controlsButton = new PressableButton(controls, larger_pressed, new ScreenAnchor(0.5f, 0.5f), Origin.CENTER);
+        Button resumeButton = new PressableButton(resume, larger_pressed, controlsButton, Origin.CENTER, new Vector2(0, controls.getRegion().getRegionHeight())) {
+            @Override
+            public void click() {
+                paused = false;
+                setActiveMenu(menus.get("control"));
+            }
+        };
+        Button quitButton = new PressableButton(quit, larger_pressed, controlsButton, Origin.CENTER, new Vector2(0, -controls.getRegion().getRegionHeight())) {
+            @Override
+            public void click() {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        };
+        Menu pauseMenu = new Menu(playButton, controlsButton, resumeButton, quitButton);
+
+        addMenu("control", controlMenu);
+        addMenu("pause", pauseMenu);
         setActiveMenu(controlMenu);
 
-        camera = new OrthographicCamera();
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
-        world = new World(game);
-        
-        log = new FPSLogger();
-    }
+        updateCamera();
 
-    public void setActiveMenu(Menu menu) {
-        activeMenu = menu;
-        Gdx.input.setInputProcessor(menu);
+        world = new World(game);
     }
 
     @Override
@@ -143,8 +127,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        //log.log();
-        
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -155,7 +137,7 @@ public class GameScreen implements Screen {
             world.update(delta);
         }
 
-        background.draw(game.batch, -world.getCharacter().getPosition().x, world.getCharacter().getPosition().y, camera.viewportWidth, camera.viewportHeight);
+        background.draw(game.batch, -world.getCharacter().getPosition().x, -world.getCharacter().getPosition().y, camera.viewportWidth, camera.viewportHeight);
         
         world.render(delta);
 
@@ -166,11 +148,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
+        super.resize(width, height);
 
-        for (Menu menu : menus.values()) {
-            menu.setScale(width / 256f);
-        }
+        menus.get("control").setScale(width / 256f);
+        menus.get("pause").setScale(width / 160f);
+        playButton.setScale(width / 256f);
+
         background.setScale(height / 128f);
     }
 
@@ -184,21 +167,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-    }
-
-    @Override
-    public void dispose() {
-        background0.dispose();
-        background1.dispose();
-        background2.dispose();
-        left.dispose();
-        left_pressed.dispose();
-        right.dispose();
-        right_pressed.dispose();
-        up.dispose();
-        up_pressed.dispose();
-        control.dispose();
-        pause.dispose();
     }
 
 }

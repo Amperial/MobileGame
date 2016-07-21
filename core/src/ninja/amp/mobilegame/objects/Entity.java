@@ -1,47 +1,71 @@
 package ninja.amp.mobilegame.objects;
 
 import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.map.World;
-import ninja.amp.mobilegame.physics.vectors.LVector2;
+import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 
 public class Entity {
 
     private World world;
-    private Vector2 position;
+    private LVector2 position;
     private LVector2 velocity;
     private LVector2 acceleration;
-    private float mass;
+    private Mass mass;
+    private Hitbox hitbox;
 
-    public Entity(World world, Vector2 position, LVector2 velocity, LVector2 acceleration, float mass) {
+    public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, Hitbox hitbox) {
         this.world = world;
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+        this.hitbox = hitbox;
     }
 
     public World getWorld() {
         return world;
     }
 
-    public Vector2 getPosition() {
+    public LVector2 getPosition() {
         return position;
+    }
+
+    public void setPosition(LVector2 position) {
+        this.position = position;
     }
 
     public LVector2 getVelocity() {
         return velocity;
     }
 
+    public void setVelocity(LVector2 velocity) {
+        this.velocity = velocity;
+    }
+
     public LVector2 getAcceleration() {
         return acceleration;
     }
 
-    public float getMass() {
-        return mass;
+    public void setAcceleration(LVector2 acceleration) {
+        this.acceleration = acceleration;
     }
 
-    public void setMass(float mass) {
+    public float getMass() {
+        return mass.getMass();
+    }
+
+    public void setMass(Mass mass) {
         this.mass = mass;
+    }
+
+    public Hitbox getHitbox() {
+        return hitbox;
+    }
+
+    public void setHitbox(Hitbox hitbox) {
+        this.hitbox = hitbox;
     }
 
     public void applyForce(Vector2 force) {
@@ -49,14 +73,15 @@ public class Entity {
     }
 
     public void update(float deltaTime) {
-        acceleration.scl(1 / mass);
+        acceleration.scl(1 / mass.getMass());
         acceleration.limit();
 
         velocity.add(acceleration.cpy().scl(deltaTime));
         acceleration.setZero();
         velocity.limit();
-        
+
         position.add(velocity.cpy().scl(deltaTime));
+        position.limit();
     }
 
 }

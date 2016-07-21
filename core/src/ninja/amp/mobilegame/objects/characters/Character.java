@@ -1,16 +1,15 @@
 package ninja.amp.mobilegame.objects.characters;
 
-import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.objects.Entity;
-import ninja.amp.mobilegame.physics.vectors.LVector2;
+import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 
 public class Character extends Entity {
 
-    private int level;
-
-    public Character(World world, Vector2 position, LVector2 velocity, LVector2 acceleration, float mass) {
-        super(world, position, velocity, acceleration, mass);
+    public Character(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, Hitbox hitbox) {
+        super(world, position, velocity, acceleration, mass, hitbox);
     }
 
 }
