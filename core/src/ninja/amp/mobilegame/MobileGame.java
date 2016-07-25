@@ -3,7 +3,7 @@ package ninja.amp.mobilegame;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import ninja.amp.mobilegame.screens.MainMenuScreen;
+import ninja.amp.mobilegame.screens.home.HomeScreen;
 import ninja.amp.mobilegame.screens.Screen;
 
 public class MobileGame extends Game {
@@ -16,7 +16,7 @@ public class MobileGame extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
-        super.setScreen(new MainMenuScreen(this));
+        super.setScreen(new HomeScreen(this));
 	}
 
     public void setScreen(Screen screen) {

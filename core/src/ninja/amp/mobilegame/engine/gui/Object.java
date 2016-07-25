@@ -2,30 +2,33 @@ package ninja.amp.mobilegame.engine.gui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.engine.resources.texture.Texture;
 
-public abstract class Object implements Anchor {
+public class Object implements Anchor {
 
+    private Texture texture;
     private Anchor anchor;
     private Origin origin;
     private Vector2 offset;
     private float scale;
 
-    public Object(Anchor anchor, Origin origin, Vector2 offset) {
+    public Object(Texture texture, Anchor anchor, Origin origin, Vector2 offset) {
+        this.texture = texture;
         this.anchor = anchor;
         this.origin = origin;
         this.offset = offset;
     }
 
-    public Object(Anchor anchor, Origin origin) {
-        this(anchor, origin, Vector2.Zero);
+    public Object(Texture texture, Anchor anchor, Origin origin) {
+        this(texture, anchor, origin, Vector2.Zero);
     }
 
-    public Object(Anchor anchor, Vector2 offset) {
-        this(anchor, Origin.CENTER, offset);
+    public Object(Texture texture, Anchor anchor, Vector2 offset) {
+        this(texture, anchor, Origin.CENTER, offset);
     }
 
-    public Object(Anchor anchor) {
-        this(anchor, Origin.CENTER, Vector2.Zero);
+    public Object(Texture texture, Anchor anchor) {
+        this(texture, anchor, Origin.CENTER, Vector2.Zero);
     }
 
     public Anchor getAnchor() {
@@ -70,9 +73,13 @@ public abstract class Object implements Anchor {
         return anchor.getY() + (offset.y * scale);
     }
 
-    public abstract float getWidth();
+    public float getWidth() {
+        return texture.getRegion().getRegionWidth();
+    }
 
-    public abstract float getHeight();
+    public float getHeight() {
+        return texture.getRegion().getRegionHeight();
+    }
 
     public float getScreenX() {
         return getX() - (origin.getX() * getWidth() * scale);
@@ -97,6 +104,8 @@ public abstract class Object implements Anchor {
         return x >= minX && x <= minX + getScreenWidth() && y >= minY && y <= minY + getScreenHeight();
     }
 
-    public abstract void draw(Batch batch);
+    public void draw(Batch batch) {
+        batch.draw(texture.getRegion(), getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
+    }
 
 }

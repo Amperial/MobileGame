@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.MobileGame;
 import ninja.amp.mobilegame.engine.physics.collision.RectangleHitbox;
-import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.engine.physics.forces.SimpleForce;
 import ninja.amp.mobilegame.engine.physics.mass.StaticMass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;

@@ -1,33 +1,14 @@
-package ninja.amp.mobilegame.engine.gui;
+package ninja.amp.mobilegame.engine.gui.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import ninja.amp.mobilegame.engine.gui.buttons.Button;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-public class Menu implements InputProcessor {
+public abstract class MenuProcessor implements InputProcessor {
 
-    private Set<Button> buttons = new HashSet<Button>();
-
-    public Menu(Button... buttons) {
-        this.buttons.addAll(Arrays.asList(buttons));
-    }
-
-    public void draw(Batch batch) {
-        for (Button button : buttons) {
-            button.draw(batch);
-        }
-    }
-
-    public void setScale(float scale) {
-        for (Button button : buttons) {
-            button.setScale(scale);
-        }
-    }
+    public abstract Collection<Button> buttons();
 
     @Override
     public boolean keyDown(int keycode) {
@@ -46,47 +27,56 @@ public class Menu implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        for (Button b : buttons) {
+        boolean processed = false;
+        for (Button b : buttons()) {
             if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
                 if (!b.isPressed()) {
                     b.setPressed(pointer);
+                    processed = true;
                 }
                 if (!b.isHovered()) {
                     b.setHovered(pointer);
+                    processed = true;
                 }
             }
         }
-        return true;
+        return processed;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        for (Button b : buttons) {
+        boolean processed = false;
+        for (Button b : buttons()) {
             if (b.isPressed(pointer)) {
                 b.setPressed(-1);
                 if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
                     b.click();
+                    processed = true;
                 }
             }
             if (b.isHovered(pointer)) {
                 b.setHovered(-1);
+                processed = true;
             }
         }
-        return true;
+        return processed;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        for (Button b : buttons) {
+        boolean processed = false;
+        for (Button b : buttons()) {
             if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
                 if (!b.isHovered()) {
                     b.setHovered(pointer);
+                    processed = true;
                 }
             } else if (b.isHovered(pointer)) {
                 b.setHovered(-1);
+                processed = true;
             }
         }
-        return true;
+        return processed;
     }
 
     @Override
@@ -98,4 +88,5 @@ public class Menu implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }

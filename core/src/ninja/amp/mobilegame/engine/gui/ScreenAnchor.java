@@ -14,12 +14,12 @@ public class ScreenAnchor implements Anchor {
 
     @Override
     public float getX() {
-        return percentX * Gdx.graphics.getWidth();
+        return percentX * Gdx.graphics.getWidth(); // TODO: Remove Gdx.graphics usage
     }
 
     @Override
     public float getY() {
-        return percentY * Gdx.graphics.getHeight();
+        return percentY * Gdx.graphics.getHeight(); // TODO: Remove Gdx.graphics usage
     }
 
 }

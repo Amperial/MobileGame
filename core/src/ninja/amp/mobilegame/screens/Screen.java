@@ -2,19 +2,25 @@ package ninja.amp.mobilegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import ninja.amp.mobilegame.MobileGame;
-import ninja.amp.mobilegame.engine.gui.Menu;
+import ninja.amp.mobilegame.engine.gui.menus.Menu;
+import ninja.amp.mobilegame.engine.gui.popups.Popup;
 import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class Screen extends ResourceHandler implements com.badlogic.gdx.Screen {
 
-    protected final MobileGame game;
+    protected MobileGame game;
     protected OrthographicCamera camera;
 
     protected Menu activeMenu;
     protected HashMap<String, Menu> menus = new HashMap<String, Menu>();
+    protected List<Popup> popups = new ArrayList<Popup>();
 
     public Screen(MobileGame game) {
         this.game = game;
@@ -28,11 +34,45 @@ public abstract class Screen extends ResourceHandler implements com.badlogic.gdx
 
     public void setActiveMenu(Menu menu) {
         activeMenu = menu;
-        Gdx.input.setInputProcessor(menu);
+        Gdx.input.setInputProcessor(menu.getProcessor());
+    }
+
+    public boolean hasPopup() {
+        return !popups.isEmpty();
+    }
+
+    public void openPopup(Menu menu) {
+        popups.add(new Popup(menu));
+    }
+
+    public void closePopup() {
+        if (hasPopup()) {
+            popups.get(popups.size() - 1).close();
+            popups.remove(popups.size() - 1);
+        }
+    }
+
+    public void closePopups() {
+        while (hasPopup()) {
+            closePopup();
+        }
     }
 
     public void updateCamera() {
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    public void draw(Batch batch) {
+        activeMenu.draw(batch);
+        Iterator<Popup> popupIterator = popups.iterator();
+        while (popupIterator.hasNext()) {
+            Popup popup = popupIterator.next();
+            if (popup.isClosed()) {
+                popupIterator.remove();
+            } else {
+                popup.draw(batch);
+            }
+        }
     }
 
     @Override
@@ -44,10 +84,13 @@ public abstract class Screen extends ResourceHandler implements com.badlogic.gdx
     public void dispose() {
         super.dispose();
 
-        camera = null;
+        closePopups();
+        popups = null;
         activeMenu = null;
         menus.clear();
         menus = null;
+        camera = null;
+        game = null;
     }
 
 }

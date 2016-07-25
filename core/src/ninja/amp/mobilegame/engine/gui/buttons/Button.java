@@ -1,6 +1,5 @@
 package ninja.amp.mobilegame.engine.gui.buttons;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.gui.Object;
 import ninja.amp.mobilegame.engine.gui.Origin;
@@ -9,43 +8,23 @@ import ninja.amp.mobilegame.engine.resources.texture.Texture;
 
 public class Button extends Object {
 
-    private Texture texture;
     private int pressed = -1;
     private int hovered = -1;
 
     public Button(Texture texture, Anchor anchor, Origin origin, Vector2 offset) {
-        super(anchor, origin, offset);
-        this.texture = texture;
+        super(texture, anchor, origin, offset);
     }
 
     public Button(Texture texture, Anchor anchor, Origin origin) {
-        super(anchor, origin);
-        this.texture = texture;
+        super(texture, anchor, origin);
     }
 
     public Button(Texture texture, Anchor anchor, Vector2 offset) {
-        super(anchor, offset);
-        this.texture = texture;
+        super(texture, anchor, offset);
     }
 
     public Button(Texture texture, Anchor anchor) {
-        super(anchor);
-        this.texture = texture;
-    }
-
-    @Override
-    public float getWidth() {
-        return texture.getRegion().getRegionWidth();
-    }
-
-    @Override
-    public float getHeight() {
-        return texture.getRegion().getRegionHeight();
-    }
-
-    @Override
-    public void draw(Batch batch) {
-        batch.draw(texture.getRegion(), getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
+        super(texture, anchor);
     }
 
     public void setPressed(int pointer) {
