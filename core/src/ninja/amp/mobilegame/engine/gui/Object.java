@@ -2,17 +2,17 @@ package ninja.amp.mobilegame.engine.gui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import ninja.amp.mobilegame.engine.resources.texture.Texture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class Object implements Anchor {
 
     private Texture texture;
     private Anchor anchor;
     private Origin origin;
-    private Vector2 offset;
+    private Offset offset;
     private float scale;
 
-    public Object(Texture texture, Anchor anchor, Origin origin, Vector2 offset) {
+    public Object(Texture texture, Anchor anchor, Origin origin, Offset offset) {
         this.texture = texture;
         this.anchor = anchor;
         this.origin = origin;
@@ -20,15 +20,15 @@ public class Object implements Anchor {
     }
 
     public Object(Texture texture, Anchor anchor, Origin origin) {
-        this(texture, anchor, origin, Vector2.Zero);
+        this(texture, anchor, origin, new StaticOffset(Vector2.Zero));
     }
 
-    public Object(Texture texture, Anchor anchor, Vector2 offset) {
+    public Object(Texture texture, Anchor anchor, Offset offset) {
         this(texture, anchor, Origin.CENTER, offset);
     }
 
     public Object(Texture texture, Anchor anchor) {
-        this(texture, anchor, Origin.CENTER, Vector2.Zero);
+        this(texture, anchor, Origin.CENTER, new StaticOffset(Vector2.Zero));
     }
 
     public Anchor getAnchor() {
@@ -40,10 +40,10 @@ public class Object implements Anchor {
     }
 
     public Vector2 getOffset() {
-        return offset;
+        return offset.getOffset();
     }
 
-    public void setOffset(Vector2 offset) {
+    public void setOffset(Offset offset) {
         this.offset = offset;
     }
 
@@ -65,12 +65,12 @@ public class Object implements Anchor {
 
     @Override
     public float getX() {
-        return anchor.getX() + (offset.x * scale);
+        return anchor.getX() + (offset.getOffset().x * scale);
     }
 
     @Override
     public float getY() {
-        return anchor.getY() + (offset.y * scale);
+        return anchor.getY() + (offset.getOffset().y * scale);
     }
 
     public float getWidth() {
@@ -104,7 +104,7 @@ public class Object implements Anchor {
         return x >= minX && x <= minX + getScreenWidth() && y >= minY && y <= minY + getScreenHeight();
     }
 
-    public void draw(Batch batch) {
+    public void draw(Batch batch, float delta) {
         batch.draw(texture.getRegion(), getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
     }
 

@@ -29,7 +29,7 @@ public abstract class MenuProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean processed = false;
         for (Button b : buttons()) {
-            if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+            if (b.contains(screenX, Gdx.graphics.getHeight() - 1 -screenY)) {
                 if (!b.isPressed()) {
                     b.setPressed(pointer);
                     processed = true;
@@ -49,7 +49,7 @@ public abstract class MenuProcessor implements InputProcessor {
         for (Button b : buttons()) {
             if (b.isPressed(pointer)) {
                 b.setPressed(-1);
-                if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+                if (b.contains(screenX, Gdx.graphics.getHeight() - 1 - screenY)) {
                     b.click();
                     processed = true;
                 }
@@ -66,7 +66,7 @@ public abstract class MenuProcessor implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         boolean processed = false;
         for (Button b : buttons()) {
-            if (b.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+            if (b.contains(screenX, Gdx.graphics.getHeight() - 1 - screenY)) {
                 if (!b.isHovered()) {
                     b.setHovered(pointer);
                     processed = true;

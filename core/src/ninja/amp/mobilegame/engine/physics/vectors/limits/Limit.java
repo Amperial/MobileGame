@@ -2,15 +2,25 @@ package ninja.amp.mobilegame.engine.physics.vectors.limits;
 
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
-public interface Limit<T extends Vector<T>> {
+public class Limit<T extends Vector<T>> {
 
-    Limit<Vector2> NONE = new Limit<Vector2>() {
-        @Override
-        public void apply(Vector2 value) {
+    public static Limit<Vector2> VEC2 = new Limit<Vector2>();
+
+    public static Limit<Vector3> VEC3 = new Limit<Vector3>();
+
+    public void limit(T value) {
+        if (!test(value)) {
+            apply(value);
         }
-    };
+    }
 
-    void apply(T value);
+    public boolean test(T value) {
+        return true;
+    }
+
+    public void apply(T value) {
+    }
 
 }

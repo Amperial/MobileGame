@@ -19,8 +19,8 @@ public class Popup {
         Gdx.input.setInputProcessor(menu.getProcessor());
     }
 
-    public void draw(Batch batch) {
-        menu.draw(batch);
+    public void draw(Batch batch, float delta) {
+        menu.draw(batch, delta);
     }
 
     public boolean isClosed() {

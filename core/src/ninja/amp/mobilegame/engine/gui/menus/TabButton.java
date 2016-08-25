@@ -1,11 +1,11 @@
 package ninja.amp.mobilegame.engine.gui.menus;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.gui.Anchor;
+import ninja.amp.mobilegame.engine.gui.Offset;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.buttons.Button;
-import ninja.amp.mobilegame.engine.resources.texture.Texture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class TabButton extends Button {
 
@@ -13,7 +13,7 @@ public class TabButton extends Button {
     private Menu menu;
     private Texture active;
 
-    public TabButton(TabMenu tabMenu, Menu menu, Texture tab, Texture active, Anchor anchor, Origin origin, Vector2 offset) {
+    public TabButton(TabMenu tabMenu, Menu menu, Texture tab, Texture active, Anchor anchor, Origin origin, Offset offset) {
         super(tab, anchor, origin, offset);
         this.tabMenu = tabMenu;
         this.menu = menu;
@@ -30,11 +30,11 @@ public class TabButton extends Button {
     }
 
     @Override
-    public void draw(Batch batch) {
-        super.draw(batch);
+    public void draw(Batch batch, float delta) {
+        super.draw(batch, delta);
         if (this.equals(tabMenu.getActive())) {
             batch.draw(active.getRegion(), getScreenX(), getScreenY(), getScreenWidth(), getScreenHeight());
-            menu.draw(batch);
+            menu.draw(batch, delta);
         }
     }
 

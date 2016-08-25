@@ -2,6 +2,7 @@ package ninja.amp.mobilegame.engine.resources.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import ninja.amp.mobilegame.MobileGame;
 import ninja.amp.mobilegame.engine.resources.Resource;
 import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 
@@ -17,7 +18,9 @@ public class Music implements com.badlogic.gdx.audio.Music, Resource {
 
     @Override
     public void play() {
-        music.play();
+        if (MobileGame.options.getMusic()) {
+            music.play();
+        }
     }
 
     @Override

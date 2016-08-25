@@ -22,7 +22,7 @@ public class LVector2 extends Vector2 {
     }
 
     public void limit() {
-        limit.apply(this);
+        limit.limit(this);
     }
 
 }

@@ -2,6 +2,7 @@ package ninja.amp.mobilegame.engine.gui.menus;
 
 import com.badlogic.gdx.InputProcessor;
 import ninja.amp.mobilegame.engine.gui.input.MultiProcessor;
+import ninja.amp.mobilegame.screens.Screen;
 
 public class TabMenu extends Menu {
 
@@ -9,6 +10,10 @@ public class TabMenu extends Menu {
     private TabButton activeTab;
 
     private MultiProcessor processor = new MultiProcessor();
+
+    public TabMenu(Screen screen) {
+        super(screen);
+    }
 
     public TabButton getDefault() {
         return defaultTab;

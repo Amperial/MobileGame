@@ -1,17 +1,17 @@
 package ninja.amp.mobilegame.engine.gui.buttons;
 
-import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.gui.Object;
+import ninja.amp.mobilegame.engine.gui.Offset;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.Anchor;
-import ninja.amp.mobilegame.engine.resources.texture.Texture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class Button extends Object {
 
     private int pressed = -1;
     private int hovered = -1;
 
-    public Button(Texture texture, Anchor anchor, Origin origin, Vector2 offset) {
+    public Button(Texture texture, Anchor anchor, Origin origin, Offset offset) {
         super(texture, anchor, origin, offset);
     }
 
@@ -19,7 +19,7 @@ public class Button extends Object {
         super(texture, anchor, origin);
     }
 
-    public Button(Texture texture, Anchor anchor, Vector2 offset) {
+    public Button(Texture texture, Anchor anchor, Offset offset) {
         super(texture, anchor, offset);
     }
 

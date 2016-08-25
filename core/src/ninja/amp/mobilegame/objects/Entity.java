@@ -80,7 +80,8 @@ public class Entity {
         acceleration.setZero();
         velocity.limit();
 
-        position.add(velocity.cpy().scl(deltaTime));
+        //position.add(velocity.cpy().scl(deltaTime));
+        world.map.move(this, velocity.cpy().scl(deltaTime));
         position.limit();
     }
 

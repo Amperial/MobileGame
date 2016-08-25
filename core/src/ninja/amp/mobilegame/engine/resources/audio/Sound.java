@@ -2,6 +2,7 @@ package ninja.amp.mobilegame.engine.resources.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import ninja.amp.mobilegame.MobileGame;
 import ninja.amp.mobilegame.engine.resources.Resource;
 import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 
@@ -17,32 +18,56 @@ public class Sound implements com.badlogic.gdx.audio.Sound, Resource {
 
     @Override
     public long play() {
-        return sound.play();
+        if (MobileGame.options.getSound()) {
+            return sound.play();
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public long play(float volume) {
-        return sound.play(volume);
+        if (MobileGame.options.getSound()) {
+            return sound.play(volume);
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public long play(float volume, float pitch, float pan) {
-        return sound.play(volume, pitch, pan);
+        if (MobileGame.options.getSound()) {
+            return sound.play(volume, pitch, pan);
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public long loop() {
-        return sound.loop();
+        if (MobileGame.options.getSound()) {
+            return sound.loop();
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public long loop(float volume) {
-        return sound.loop(volume);
+        if (MobileGame.options.getSound()) {
+            return sound.loop(volume);
+        } else {
+            return -1;
+        }
     }
 
     @Override
     public long loop(float volume, float pitch, float pan) {
-        return sound.loop(volume, pitch, pan);
+        if (MobileGame.options.getSound()) {
+            return sound.loop(volume, pitch, pan);
+        } else {
+            return -1;
+        }
     }
 
     @Override
@@ -57,7 +82,9 @@ public class Sound implements com.badlogic.gdx.audio.Sound, Resource {
 
     @Override
     public void resume() {
-        sound.resume();
+        if (MobileGame.options.getSound()) {
+            sound.resume();
+        }
     }
 
     @Override
@@ -78,7 +105,9 @@ public class Sound implements com.badlogic.gdx.audio.Sound, Resource {
 
     @Override
     public void resume(long soundId) {
-        sound.resume(soundId);
+        if (MobileGame.options.getSound()) {
+            sound.resume(soundId);
+        }
     }
 
     @Override

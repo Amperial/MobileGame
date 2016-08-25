@@ -13,7 +13,7 @@ public class Impulse extends Force {
 
     @Override
     public Vector2 calculate(Entity entity, float delta) {
-        return force.scl(entity.getMass());
+        return force.scl(1 / delta);
     }
 
     @Override

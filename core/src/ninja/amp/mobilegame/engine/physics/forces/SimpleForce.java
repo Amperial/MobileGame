@@ -11,7 +11,6 @@ public class SimpleForce extends Force {
     public SimpleForce(Vector2 force, boolean persist) {
         this.force = force;
         this.persist = persist;
-        
     }
 
     @Override

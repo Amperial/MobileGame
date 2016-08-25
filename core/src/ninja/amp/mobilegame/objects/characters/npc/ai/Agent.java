@@ -8,6 +8,8 @@ public interface Agent {
 
     Action getAction();//get current action
 
+    void setAction(Action action);//set and begin next action, cancelling existing action
+
     void chooseAction();//choose and begin next action
 
 }

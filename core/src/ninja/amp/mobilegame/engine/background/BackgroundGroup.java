@@ -24,7 +24,6 @@ public class BackgroundGroup implements Background {
     public void draw(Batch batch, float x, float y, float width, float height) {
         for (Background layer : layers) {
             layer.draw(batch, x, y, width, height);
-            
         }
     }
 

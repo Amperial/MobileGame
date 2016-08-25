@@ -2,7 +2,7 @@ package ninja.amp.mobilegame.engine.background;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import ninja.amp.mobilegame.engine.resources.texture.Texture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class BackgroundLayer implements Background {
 

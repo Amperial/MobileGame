@@ -1,20 +1,23 @@
 package ninja.amp.mobilegame;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ninja.amp.mobilegame.engine.persistence.Options;
 import ninja.amp.mobilegame.screens.home.HomeScreen;
 import ninja.amp.mobilegame.screens.Screen;
 
 public class MobileGame extends Game {
 
-    public SpriteBatch batch;
-    public BitmapFont font;
+    public static Options options;
+
+    public Batch batch;
 
 	@Override
 	public void create () {
+        options = new Options();
+
         batch = new SpriteBatch();
-        font = new BitmapFont();
 
         super.setScreen(new HomeScreen(this));
 	}
@@ -30,9 +33,18 @@ public class MobileGame extends Game {
     }
 
     @Override
+    public void pause() {
+        options.save();
+    }
+
+    @Override
+    public void resume() {
+        options.load();
+    }
+
+    @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
     }
 
 }
