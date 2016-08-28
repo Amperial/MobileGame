@@ -30,6 +30,7 @@ public abstract class TimedAction implements Action {
 
     @Override
     public void cancel() {
+        remaining = 0;
     }
 
     @Override

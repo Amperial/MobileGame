@@ -1,6 +1,7 @@
 package ninja.amp.mobilegame.objects.characters.npc.hostile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.graphics.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
@@ -8,13 +9,16 @@ import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
 import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.map.World;
-import ninja.amp.mobilegame.objects.characters.movement.Body;
-import ninja.amp.mobilegame.objects.characters.movement.BodyPart;
-import ninja.amp.mobilegame.objects.characters.movement.Position;
+import ninja.amp.mobilegame.objects.body.Body;
+import ninja.amp.mobilegame.objects.body.BodyPart;
+import ninja.amp.mobilegame.objects.body.pose.Pose;
+import ninja.amp.mobilegame.objects.body.pose.position.Position;
+import ninja.amp.mobilegame.objects.body.pose.position.StaticPosition;
+import ninja.amp.mobilegame.objects.body.pose.position.TreePosition;
 import ninja.amp.mobilegame.objects.characters.npc.NPC;
 import ninja.amp.mobilegame.objects.characters.npc.State;
 import ninja.amp.mobilegame.objects.characters.npc.ai.actions.Action;
-import ninja.amp.mobilegame.objects.characters.npc.ai.actions.Idle;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.Stop;
 import ninja.amp.mobilegame.screens.Screen;
 
 public class Bat extends NPC {
@@ -35,37 +39,50 @@ public class Bat extends NPC {
             }
         };
 
-        BodyPart torso = new BodyPart(body, null, new RegionTexture(hostile.findRegion("bat/head"), screen), 0, new Position(null, 0, 0, 0, 0, 18f/32f, 13f/32f, 0) {
-            @Override
-            public float getX(boolean flipped) {
-                if (flipped) {
-                    return body.position().x + getWidth();
-                } else {
+        body.setPose(new Pose() {
+            final float offset = (float)Math.random();
+            Position torso = new StaticPosition(0, 0, 0, 0, 18f/32f, 13f/32f, 0) {
+                @Override
+                public float getX() {
                     return body.position().x;
                 }
-            }
+                @Override
+                public float getY() {
+                    return body.position().y;
+                }
+                @Override
+                public float getFlippedX() {
+                    return body.position().x + getWidth();
+                }
+            };
+            Position wing_right = new TreePosition(torso, 12f/32f, 3f/23f, 0, 0, 18f/32f, 21f/32f, -45f) {
+                @Override
+                public float getRotation() {
+                    return super.getRotation() - MathUtils.sin((body.getPoseTime()+offset)*6*MathUtils.PI)*45f;
+                }
+            };
+            Position wing_left = new TreePosition(torso, 9f/32f, 3f/32f, 16f/32f, 0, 16f/32f, 21f/32f, 45f) {
+                @Override
+                public float getRotation() {
+                    return super.getRotation() + MathUtils.sin((body.getPoseTime()+offset)*6*MathUtils.PI)*45f;
+                }
+            };
             @Override
-            public float getY(boolean flipped) {
-                return body.position().y;
-            }
-            @Override
-            public float getRotation() {
-                return 0;
+            public Position getPosition(String id) {
+                if (id.equals("torso")) {
+                    return torso;
+                } else if (id.equals("wing_right")) {
+                    return wing_right;
+                } else if (id.equals("wing_left")) {
+                    return wing_left;
+                }
+                return null;
             }
         });
-        final float offset = (float)Math.random();
-        BodyPart wing_right = new BodyPart(body, torso, new RegionTexture(hostile.findRegion("bat/wing_right"), screen), 1, new Position(torso.getPosition(), 12f/32f, 3f/32f, 0, 0, 18f/32f, 21f/32f, -45f) {
-            @Override
-            public float getRotation() {
-                return super.getRotation() - (float)Math.sin((getTotalTime()+offset)*6*Math.PI)*45f;
-            }
-        });
-        BodyPart wing_left = new BodyPart(body, torso, new RegionTexture(hostile.findRegion("bat/wing_left"), screen), -1, new Position(torso.getPosition(), 9f/32f, 3f/32f, 16f/32f, 0, 16f/32f, 21f/32f, 45f) {
-            @Override
-            public float getRotation() {
-                return super.getRotation() + (float)Math.sin((getTotalTime()+offset)*6*Math.PI)*45f;
-            }
-        });
+
+        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(hostile.findRegion("bat/head"), screen), 0);
+        BodyPart wing_right = new BodyPart(body, "wing_right", new RegionTexture(hostile.findRegion("bat/wing_right"), screen), 1);
+        BodyPart wing_left = new BodyPart(body, "wing_left", new RegionTexture(hostile.findRegion("bat/wing_left"), screen), -1);
     }
 
     public Body getBody() {
@@ -93,7 +110,7 @@ public class Bat extends NPC {
 
     @Override
     public void chooseAction() {
-        setAction(new Idle(this));
+        setAction(new Stop(this, 1, true));
     }
 
 }

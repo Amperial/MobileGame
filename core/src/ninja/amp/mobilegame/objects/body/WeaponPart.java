@@ -1,9 +1,8 @@
-package ninja.amp.mobilegame.objects.characters.movement.positions;
+package ninja.amp.mobilegame.objects.body;
 
 import ninja.amp.mobilegame.engine.graphics.Texture;
-import ninja.amp.mobilegame.objects.characters.movement.Body;
-import ninja.amp.mobilegame.objects.characters.movement.BodyPart;
-import ninja.amp.mobilegame.objects.characters.movement.Position;
+import ninja.amp.mobilegame.objects.body.pose.position.Position;
+import ninja.amp.mobilegame.objects.body.pose.position.TreePosition;
 import ninja.amp.mobilegame.objects.items.weapons.Weapon;
 
 public class WeaponPart extends BodyPart {
@@ -11,11 +10,11 @@ public class WeaponPart extends BodyPart {
     private Weapon weapon;
     private Position position;
 
-    public WeaponPart(Body body, BodyPart arm, final Weapon weapon, int depth, int flippedDepth, float offsetX, float offsetY, float rotation) {
-        super(body, arm, null, depth, flippedDepth, null);
+    public WeaponPart(Body body, BodyPart arm, final Weapon weapon, String id, int depth, int flippedDepth, float offsetX, float offsetY, float rotation) {
+        super(body, id, null, depth, flippedDepth, null);
 
         this.weapon = weapon;
-        this.position = new Position(arm.getPosition(), offsetX, offsetY, 0, 0, 0, 0, rotation) {
+        this.position = new TreePosition(arm.getPosition(), offsetX, offsetY, 0, 0, 0, 0, rotation) {
             @Override
             public float getOriginX() {
                 return weapon.getPosition().getOriginX();
@@ -39,8 +38,8 @@ public class WeaponPart extends BodyPart {
         };
     }
 
-    public WeaponPart(Body body, BodyPart arm, final Weapon weapon, int depth, float offsetX, float offsetY, float rotation) {
-        this(body, arm, weapon, depth, depth, offsetX, offsetY, rotation);
+    public WeaponPart(Body body, BodyPart arm, Weapon weapon, String id, int depth, float offsetX, float offsetY, float rotation) {
+        this(body, arm, weapon, id, depth, depth, offsetX, offsetY, rotation);
     }
 
     @Override

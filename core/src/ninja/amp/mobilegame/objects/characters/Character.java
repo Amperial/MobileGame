@@ -5,7 +5,7 @@ import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
-import ninja.amp.mobilegame.objects.characters.movement.Body;
+import ninja.amp.mobilegame.objects.body.Body;
 
 public class Character extends Entity {
 

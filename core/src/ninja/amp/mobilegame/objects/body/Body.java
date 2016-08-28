@@ -1,13 +1,15 @@
-package ninja.amp.mobilegame.objects.characters.movement;
+package ninja.amp.mobilegame.objects.body;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import ninja.amp.mobilegame.objects.body.pose.Pose;
+import ninja.amp.mobilegame.objects.body.pose.Poseable;
 
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class Body {
+public abstract class Body implements Poseable {
 
     private Set<BodyPart> parts = new TreeSet<BodyPart>(new Comparator<BodyPart>() {
         @Override
@@ -33,15 +35,37 @@ public abstract class Body {
             }
         }
     });
+    private Pose pose;
+    private float poseTime;
+
+    @Override
+    public Pose getPose() {
+        return pose;
+    }
+
+    @Override
+    public void setPose(Pose pose) {
+        this.pose = pose;
+        this.poseTime = 0;
+        for (BodyPart part : parts) {
+            part.setTargetPosition(pose.getPosition(part.getId()));
+        }
+    }
+
+    @Override
+    public float getPoseTime() {
+        return poseTime;
+    }
+
+    public abstract Vector2 position();
 
     public void addBodyPart(BodyPart part) {
         parts.add(part);
         flippedParts.add(part);
     }
 
-    public abstract Vector2 position();
-
     public void draw(Batch batch, float delta, boolean flipped) {
+        poseTime += delta;
         if (flipped) {
             for (BodyPart part : flippedParts) {
                 part.draw(batch, delta, true);

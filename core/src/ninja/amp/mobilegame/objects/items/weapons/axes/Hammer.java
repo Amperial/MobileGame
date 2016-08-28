@@ -1,4 +1,4 @@
-package ninja.amp.mobilegame.objects.items.weapons.swords;
+package ninja.amp.mobilegame.objects.items.weapons.axes;
 
 import com.badlogic.gdx.Gdx;
 import ninja.amp.mobilegame.engine.graphics.Atlas;
@@ -8,10 +8,10 @@ import ninja.amp.mobilegame.objects.body.pose.position.StaticPosition;
 import ninja.amp.mobilegame.objects.characters.stats.Stat;
 import ninja.amp.mobilegame.screens.Screen;
 
-public class Longsword extends Sword {
+public class Hammer extends Axe {
 
-    public Longsword(String name, Mass mass, Screen screen) {
-        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/swords/longsword"), screen), new StaticPosition(0, 0, 4f/24f, 4.5f/24f, 7f/24f, 32f/24f, 90f));
+    public Hammer(String name, Mass mass, Screen screen) {
+        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/axes/hammer"), screen), new StaticPosition(0, 0, 7f/24f, 5.5f/24f, 14f/24f, 30f/24f, 90f));
     }
 
     @Override

@@ -3,7 +3,7 @@ package ninja.amp.mobilegame.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -15,24 +15,25 @@ import ninja.amp.mobilegame.engine.physics.forces.SimpleForce;
 import ninja.amp.mobilegame.engine.physics.mass.StaticMass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.CubeLimit;
+import ninja.amp.mobilegame.engine.physics.vectors.limits.LengthLimit;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.engine.graphics.AnimatedTexture;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.RectangleLimit;
-import ninja.amp.mobilegame.map.tiles.TileMap;
+import ninja.amp.mobilegame.map.old.TileMap;
 import ninja.amp.mobilegame.objects.Entity;
+import ninja.amp.mobilegame.objects.body.Body;
+import ninja.amp.mobilegame.objects.body.BodyPart;
+import ninja.amp.mobilegame.objects.body.WeaponPart;
+import ninja.amp.mobilegame.objects.body.pose.Pose;
 import ninja.amp.mobilegame.objects.characters.Character;
 import ninja.amp.mobilegame.engine.physics.forces.Force;
-import ninja.amp.mobilegame.objects.characters.movement.Body;
-import ninja.amp.mobilegame.objects.characters.movement.BodyPart;
-import ninja.amp.mobilegame.objects.characters.movement.MultiPosition;
-import ninja.amp.mobilegame.objects.characters.movement.Position;
-import ninja.amp.mobilegame.objects.characters.movement.positions.Idle;
-import ninja.amp.mobilegame.objects.characters.movement.positions.Jumping;
-import ninja.amp.mobilegame.objects.characters.movement.positions.Running;
-import ninja.amp.mobilegame.objects.characters.movement.positions.WeaponPart;
+import ninja.amp.mobilegame.objects.characters.movement.poses.Idle;
+import ninja.amp.mobilegame.objects.characters.movement.poses.Jumping;
+import ninja.amp.mobilegame.objects.characters.movement.poses.Running;
 import ninja.amp.mobilegame.objects.characters.npc.State;
-import ninja.amp.mobilegame.objects.characters.npc.ai.actions.MoveTo;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.WanderInRange;
 import ninja.amp.mobilegame.objects.characters.npc.hostile.Bat;
+import ninja.amp.mobilegame.objects.items.weapons.axes.Hammer;
 import ninja.amp.mobilegame.objects.items.weapons.swords.Longsword;
 import ninja.amp.mobilegame.screens.Screen;
 import ninja.amp.mobilegame.screens.ScreenCamera;
@@ -61,7 +62,14 @@ public class World {
     public boolean right = false;
     public boolean lastleft = false;
     public boolean jump = false;
+    public boolean air = false;
     private float totalDelta = 0;
+    private Pose idle;
+    private Pose running;
+    private Pose jumping;
+    private boolean pose_idle = false;
+    private boolean pose_running = false;
+    private boolean pose_jumping = false;
     private Bat bat;
 
     private AnimatedTexture tex;
@@ -82,176 +90,61 @@ public class World {
         map = new TileMap();
 
         Atlas bodyAtlas = new Atlas(Gdx.files.internal("entities/character.pack"), screen);
-
-
-
         Body body = new Body() {
-            Vector2 temp = new Vector2();
+            Vector2 position = new Vector2();
+            float max_up_velocity = 12.5f;
+            float max_down_velocity = -20;
+            float min_down_velocity = -2;
             @Override
             public Vector2 position() {
-                float bob = (float)Math.abs(Math.sin((totalDelta*2.5f + 0.25f)*Math.PI))*0.0625f;
+                float bob = Math.abs(MathUtils.sin((character.getBody().getPoseTime()*2.5f + 0.25f)*MathUtils.PI))*0.0625f;
                 if (!left && !right) {
                     bob = 0;
                 }
-                return temp.set(character.getPosition()).add(4f/16f, 9f/16f + bob);
+                return position.set(character.getPosition()).add(4f/16f, 9f/16f + bob);
             }
             @Override
-            public void draw(Batch batch, float delta, boolean flipped) {
-                totalDelta += delta;
-                super.draw(batch, delta, flipped);
+            public Pose getPose() {
+                return idle;
             }
-        };
-        Idle.BODY = body;
-        Running.BODY = body;
-        Jumping.BODY = body;
-        BodyPart torso = new BodyPart(body, null, new RegionTexture(bodyAtlas.findRegion("body"), screen), 0, 1, new MultiPosition() {
             @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.TORSO;
-                } else if (!left && !right) {
-                    return Idle.TORSO;
+            public float getPoseTime() {
+                if (pose_jumping) {
+                    float y_velocity = character.getVelocity().y;
+                    if (y_velocity > max_up_velocity || y_velocity < max_down_velocity) {
+                        return 1;
+                    } else if (y_velocity > 0) {
+                        return y_velocity / max_up_velocity;
+                    } else {
+                        if (y_velocity > min_down_velocity) {
+                            return 0;
+                        } else {
+                            return (y_velocity - min_down_velocity) / (max_down_velocity - min_down_velocity);
+                        }
+                    }
                 } else {
-                    return Running.TORSO;
-                }
-            }
-        }) {
-            @Override
-            public int getDepth() {
-                if (lastleft) {
-                    return 1;
-                } else {
-                    return 0;
+                    return super.getPoseTime();
                 }
             }
         };
-        BodyPart head = new BodyPart(body, torso, new RegionTexture(bodyAtlas.findRegion("head"), screen), 1, 2, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.HEAD;
-                } else if (!left && !right) {
-                    return Idle.HEAD;
-                } else {
-                    return Running.HEAD;
-                }
-            }
-        }) {
-            @Override
-            public int getDepth() {
-                if (lastleft) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        };
-        //arm_left_upper, arm_left_lower, leg left upper, leg left lower, torso, head, leg right lower, leg right upper, weapon, arm right lower, arm right upper
-        //-4                -3              -2              -1              0       1   2                   3               4       5               6
-        //arm right upper, arm right lower, weapon, leg right upper, leg right lower, torso, head, leg left lower, leg left upper, arm left lower, arm left upper
-        //-4                -3              -2              -1              0            1   2                   3               4       5               6
-        BodyPart arm_left_upper = new BodyPart(body, torso, new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), -4, 6, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.ARM_LEFT_UPPER;
-                } else if (!left && !right) {
-                    return Idle.ARM_LEFT_UPPER;
-                } else {
-                    return Running.ARM_LEFT_UPPER;
-                }
-            }
-        });
-        BodyPart arm_left_lower = new BodyPart(body, arm_left_upper, new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -3, 5, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.ARM_LEFT_LOWER;
-                } else if (!left && !right) {
-                    return Idle.ARM_LEFT_LOWER;
-                } else {
-                    return Running.ARM_LEFT_LOWER;
-                }
-            }
-        });
-        BodyPart arm_right_upper = new BodyPart(body, torso, new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.ARM_RIGHT_UPPER;
-                } else if (!left && !right) {
-                    return Idle.ARM_RIGHT_UPPER;
-                } else {
-                    return Running.ARM_RIGHT_UPPER;
-                }
-            }
-        });
-        BodyPart arm_right_lower = new BodyPart(body, arm_right_upper, new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.ARM_RIGHT_LOWER;
-                } else if (!left && !right) {
-                    return Idle.ARM_RIGHT_LOWER;
-                } else {
-                    return Running.ARM_RIGHT_LOWER;
-                }
-            }
-        });
-
-        BodyPart leg_left_upper = new BodyPart(body, torso, new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.LEG_LEFT_UPPER;
-                } else if (!left && !right) {
-                    return Idle.LEG_LEFT_UPPER;
-                } else {
-                    return Running.LEG_LEFT_UPPER;
-                }
-            }
-        });
-        BodyPart leg_left_lower = new BodyPart(body, leg_left_upper, new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.LEG_LEFT_LOWER;
-                } else if (!left && !right) {
-                    return Idle.LEG_LEFT_LOWER;
-                } else {
-                    return Running.LEG_LEFT_LOWER;
-                }
-            }
-        });
-        BodyPart leg_right_upper = new BodyPart(body, torso, new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.LEG_RIGHT_UPPER;
-                } else if (!left && !right) {
-                    return Idle.LEG_RIGHT_UPPER;
-                } else {
-                    return Running.LEG_RIGHT_UPPER;
-                }
-            }
-        });
-        BodyPart leg_right_lower = new BodyPart(body, leg_right_upper, new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, new MultiPosition() {
-            @Override
-            public Position current() {
-                if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
-                    return Jumping.LEG_RIGHT_LOWER;
-                } else if (!left && !right) {
-                    return Idle.LEG_RIGHT_LOWER;
-                } else {
-                    return Running.LEG_RIGHT_LOWER;
-                }
-            }
-        });
-        BodyPart weapon = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), 4, -2, 0, 4f/16f, 0);
-
+        idle = new Idle(body);
+        running = new Running(body);
+        jumping = new Jumping(body);
+        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(bodyAtlas.findRegion("body"), screen), 0, 1);
+        BodyPart head = new BodyPart(body, "head", new RegionTexture(bodyAtlas.findRegion("head"), screen), 1, 2);
+        BodyPart arm_left_upper = new BodyPart(body, "arm_left_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), -5, 7, 50);
+        BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -4, 6, 20);
+        BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, 50);
+        BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, 20);
+        BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, 50);
+        BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 40);
+        BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 50);
+        BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, 40);
+        BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f/16f, 0);
+        //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "weapon_left", -3, 5, 0, 4f/16f, 0);
         character = new Character(this,
                 new LVector2(1, 2, new RectangleLimit(new Rectangle(0, 0, map.width - 3, map.height - 3))),   // TODO: Position
-                new LVector2(new RectangleLimit(new Rectangle(-6f, -20, 12, 40))),   // TODO: Velocity
+                new LVector2(new RectangleLimit(new Rectangle(-6, -20, 12, 40))),   // TODO: Velocity
                 new LVector2(Limit.VEC2),   // TODO: Acceleration
                 new StaticMass(1),          // TODO: Mass
                 new RectangleHitbox(new Rectangle(0, 0, 1, 1)) {
@@ -262,24 +155,24 @@ public class World {
                 }, body);
         entities.add(character);
 
-        bat = new Bat(screen, this, new LVector2(5, 5, Limit.VEC2), new LVector2(0, 0, Limit.VEC2), new LVector2(0, 0, Limit.VEC2), new StaticMass(1), State.HOSTILE, new RectangleHitbox(new Rectangle(0, 0, 1, 1)) {
+
+        bat = new Bat(screen, this, new LVector2(5, 5, Limit.VEC2), new LVector2(0, 0, new LengthLimit<Vector2>(1)), new LVector2(0, 0, Limit.VEC2), new StaticMass(1), State.HOSTILE, new RectangleHitbox(new Rectangle(0, 0, 1, 1)) {
             @Override
             public Vector2 getPosition() {
                 return bat.getPosition();
             }
         });
-        bat.setAction(new MoveTo(bat, 5) {
+        /*
+        bat.setAction(new Follow(bat, 5) {
             Vector2 target = new Vector2();
-            @Override
-            public boolean isComplete() {
-                //return bat.getVelocity().len2() < 0.1 && bat.getPosition().epsilonEquals(getTarget(), 0.001f);
-                return false;
-            }
             @Override
             public Vector2 getTarget() {
                 return target.set(character.getPosition()).add(0.5f, 2.5f);
             }
         });
+        */
+        bat.setAction(new WanderInRange(bat, 5, bat.getPosition().cpy(), 2));
+        //bat.setAction(new Patrol(bat, 5f, bat.getPosition().cpy(), bat.getPosition().cpy().add(0, 1), bat.getPosition().cpy().add(1, 1), bat.getPosition().cpy().add(1, 0)));
         entities.add(bat);
     }
 
@@ -346,7 +239,7 @@ public class World {
         Vector2 vec = new Vector2();
         @Override
         public Vector2 calculate(Entity entity, float delta) {
-            return vec.set(0, -character.getVelocity().y + 15).scl(1 / delta);
+            return vec.set(0, -character.getVelocity().y + 12.5f).scl(1 / delta);
         }
     };
     Force friction_air = new Force() {
@@ -378,8 +271,6 @@ public class World {
             character.applyForce(rightforce.calculate(character, delta));
             if (lastleft) {
                 lastleft = false;
-                Idle.resetTotalTime();
-                Running.resetTotalTime();
                 totalDelta = 0;
             }
         } else if (left && !right) {
@@ -389,8 +280,6 @@ public class World {
             character.applyForce(leftforce.calculate(character, delta));
             if (!lastleft) {
                 lastleft = true;
-                Idle.resetTotalTime();
-                Running.resetTotalTime();
                 totalDelta = 0;
             }
         } else if (!right) {
@@ -398,16 +287,11 @@ public class World {
                 character.applyForce(friction_air.calculate(character, delta));
             } else {
                 character.applyForce(friction_ground.calculate(character, delta));
-                Jumping.resetTotalTime();
             }
-            Running.resetTotalTime();
             totalDelta = 0;
         }
         if (jump) {
             character.applyForce(jumpforce.calculate(character, delta));
-            Idle.resetTotalTime();
-            Running.resetTotalTime();
-            Jumping.resetTotalTime();
             totalDelta = 0;
             jump = false;
         }
@@ -419,8 +303,32 @@ public class World {
             entity.update(delta);
         }
 
-        camera.position.add(((character.getPosition().x+0.5f) * scale - camera.position.x) * delta * elasticity, ((character.getPosition().y + 0.5f + yOffset) * scale - camera.position.y) * delta * elasticity, 0);
+        // TEMP
+        if (character.getVelocity().y > 0 || character.getVelocity().y < 0) {
+            if (!pose_jumping) {
+                character.getBody().setPose(jumping);
+                pose_idle = false;
+                pose_jumping = true;
+                pose_running = false;
+            }
+        } else if (!left && !right) {
+            if (!pose_idle) {
+                character.getBody().setPose(idle);
+                pose_idle = true;
+                pose_jumping = false;
+                pose_running = false;
+            }
+        } else {
+            if (!pose_running) {
+                character.getBody().setPose(running);
+                pose_idle = false;
+                pose_jumping = false;
+                pose_running = true;
+            }
+        }
+        // TEMP
 
+        camera.position.add(((character.getPosition().x+0.5f) * scale - camera.position.x) * delta * elasticity, ((character.getPosition().y + 0.5f + yOffset) * scale - camera.position.y) * delta * elasticity, 0);
     }
 
     public void render(float delta) {
@@ -432,8 +340,8 @@ public class World {
 
         // Draw Character
         //tex.update(delta);
-        //game.batch.draw(tex.getRegion(), character.getPosition().x * scale, character.getPosition().y * scale, scale, scale);
-        //game.batch.draw(CastleTile.SOLID_FLOOR.getTexture(), character.getPosition().x * scale, character.getPosition().y * scale, scale, scale);
+        //game.batch.draw(tex.getRegion(), character.position().x * scale, character.position().y * scale, scale, scale);
+        //game.batch.draw(CastleTile.SOLID_FLOOR.getTexture(), character.position().x * scale, character.position().y * scale, scale, scale);
         character.getBody().draw(game.batch, delta, lastleft);
 
         bat.getBody().draw(game.batch, delta, bat.getVelocity().x > 0);
