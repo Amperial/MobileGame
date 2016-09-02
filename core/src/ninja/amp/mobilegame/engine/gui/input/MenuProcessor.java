@@ -29,7 +29,7 @@ public abstract class MenuProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         boolean processed = false;
         for (Button b : buttons()) {
-            if (b.contains(screenX, Gdx.graphics.getHeight() - 1 -screenY)) {
+            if (b.contains(screenX, Gdx.graphics.getHeight() - 1 - screenY)) {
                 if (!b.isPressed()) {
                     b.setPressed(pointer);
                     processed = true;

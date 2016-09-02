@@ -20,7 +20,7 @@ public class CircleHitbox extends PolygonHitbox {
 
     public static float[] circleVertices(Circle circle, int vertices) {
         float radius = circle.radius;
-        float angle = -360f / (float)vertices;
+        float angle = -360f / (float) vertices;
         float[] verts = new float[vertices * 2];
         for (int i = 0; i < vertices; i++) {
             verts[i * 2] = radius * MathUtils.sinDeg(i * angle);

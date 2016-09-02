@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public enum  CastleTile implements Tile {
+public enum CastleTile implements Tile {
     BRICK_1(0, 0, false),
     BRICK_2(1, 0, false),
     BRICK_3(2, 0, false),
@@ -60,8 +60,8 @@ public enum  CastleTile implements Tile {
         castle_n = new Texture(Gdx.files.internal("tiles/castle_n.png"));
         castle.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         for (CastleTile castleTile : values()) {
-            castleTile.region = new TextureRegion(castle, castleTile.x*16, castleTile.y*16, 16, 16);
-            castleTile.region_n = new TextureRegion(castle_n, castleTile.x*16, castleTile.y*16, 16, 16);
+            castleTile.region = new TextureRegion(castle, castleTile.x * 16, castleTile.y * 16, 16, 16);
+            castleTile.region_n = new TextureRegion(castle_n, castleTile.x * 16, castleTile.y * 16, 16, 16);
         }
     }
 

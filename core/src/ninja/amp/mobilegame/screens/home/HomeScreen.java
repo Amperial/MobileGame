@@ -8,19 +8,19 @@ import ninja.amp.mobilegame.engine.background.Background;
 import ninja.amp.mobilegame.engine.background.BackgroundGroup;
 import ninja.amp.mobilegame.engine.background.BackgroundLayer;
 import ninja.amp.mobilegame.engine.background.TileMode;
-import ninja.amp.mobilegame.engine.graphics.shaders.FadeShader;
-import ninja.amp.mobilegame.engine.gui.StaticOffset;
-import ninja.amp.mobilegame.engine.gui.buttons.Button;
-import ninja.amp.mobilegame.engine.gui.menus.Menu;
-import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
-import ninja.amp.mobilegame.engine.gui.Origin;
-import ninja.amp.mobilegame.engine.gui.buttons.PressableButton;
-import ninja.amp.mobilegame.engine.resources.audio.Music;
-import ninja.amp.mobilegame.engine.resources.audio.Sound;
 import ninja.amp.mobilegame.engine.graphics.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.SingleTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.graphics.shaders.FadeShader;
+import ninja.amp.mobilegame.engine.gui.Origin;
+import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
+import ninja.amp.mobilegame.engine.gui.StaticOffset;
+import ninja.amp.mobilegame.engine.gui.buttons.Button;
+import ninja.amp.mobilegame.engine.gui.buttons.PressableButton;
+import ninja.amp.mobilegame.engine.gui.menus.Menu;
+import ninja.amp.mobilegame.engine.resources.audio.Music;
+import ninja.amp.mobilegame.engine.resources.audio.Sound;
 import ninja.amp.mobilegame.engine.transitions.MenuInTransition;
 import ninja.amp.mobilegame.screens.Screen;
 import ninja.amp.mobilegame.screens.game.GameScreen;
@@ -38,7 +38,7 @@ public class HomeScreen extends Screen {
         super(game);
 
         Background sky = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_0.png"), this), new Vector2(1f, 0f), TileMode.REPEAT_X);
-        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(5f, 0f),TileMode.REPEAT_X);
+        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(5f, 0f), TileMode.REPEAT_X);
         Background water = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this), new Vector2(10f, 0f), TileMode.REPEAT_X);
         background = new BackgroundGroup(sky, land, water);
 

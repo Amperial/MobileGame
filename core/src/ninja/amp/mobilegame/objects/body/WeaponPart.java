@@ -19,18 +19,22 @@ public class WeaponPart extends BodyPart {
             public float getOriginX() {
                 return weapon.getPosition().getOriginX();
             }
+
             @Override
             public float getOriginY() {
                 return weapon.getPosition().getOriginY();
             }
+
             @Override
             public float getWidth() {
                 return weapon.getPosition().getWidth();
             }
+
             @Override
             public float getHeight() {
                 return weapon.getPosition().getHeight();
             }
+
             @Override
             public float getRotation() {
                 return super.getRotation() + weapon.getPosition().getRotation();

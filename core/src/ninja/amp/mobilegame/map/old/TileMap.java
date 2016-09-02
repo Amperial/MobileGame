@@ -27,7 +27,7 @@ public class TileMap {
             }
         }
         for (int x = 0; x < width; x++) {
-            for  (int y = 1; y < height; y++) {
+            for (int y = 1; y < height; y++) {
                 tiles[x][y][0] = CastleTile.BRICK_1;
             }
             tiles[x][0][0] = CastleTile.SOLID_FLOOR;
@@ -59,7 +59,7 @@ public class TileMap {
                 for (Tile tile : tiles[x][y]) {
                     if (tile != null) {
                         // TODO: Dont render tiles that wont be visible
-                        batch.draw(tile.getTexture(), x*scale, y*scale, scale, scale);
+                        batch.draw(tile.getTexture(), x * scale, y * scale, scale, scale);
                     }
                 }
             }
@@ -70,7 +70,7 @@ public class TileMap {
         Vector2 position = entity.getPosition();
         Rectangle hitbox;
         if (entity.getHitbox() instanceof RectangleHitbox) {
-            hitbox = ((RectangleHitbox)entity.getHitbox()).getRectangle();
+            hitbox = ((RectangleHitbox) entity.getHitbox()).getRectangle();
         } else {
             hitbox = defaultHitbox;
         }

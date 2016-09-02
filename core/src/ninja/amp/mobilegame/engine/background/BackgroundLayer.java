@@ -18,7 +18,7 @@ public class BackgroundLayer implements Background {
         this.offset = offset;
         this.mode = mode;
     }
-    
+
     public BackgroundLayer(Texture texture, Vector2 ratio, Vector2 offset) {
         this(texture, ratio, offset, TileMode.SINGLE);
     }
@@ -76,21 +76,21 @@ public class BackgroundLayer implements Background {
     public void draw(Batch batch, float x, float y, float width, float height) {
         float w = texture.getRegion().getRegionWidth() * scale;
         float h = texture.getRegion().getRegionHeight() * scale;
-        
+
         x = (x * ratio.x) + (offset.x * scale);
         y = (y * ratio.y) + (offset.y * scale);
-        
+
         if (!isVisible(x, y, w, h, width, height)) {
             return;
         }
-        
+
         if (mode == TileMode.REPEAT_X || mode == TileMode.REPEAT_XY) {
             x = (x % w) - w;
         }
         if (mode == TileMode.REPEAT_Y || mode == TileMode.REPEAT_XY) {
             y = (y % h) - h;
         }
-        
+
         switch (mode) {
             case SINGLE:
                 batch.draw(texture.getRegion(), x, y, w, h);
@@ -123,7 +123,7 @@ public class BackgroundLayer implements Background {
     private boolean isVisible(float x, float y, float w, float h, float width, float height) {
         boolean xInBounds = x <= width && x + w >= 0;
         boolean yInBounds = y <= height && y + h >= 0;
-        
+
         return mode == TileMode.REPEAT_XY || (mode == TileMode.REPEAT_X && yInBounds) || (mode == TileMode.REPEAT_Y && xInBounds) || (xInBounds && yInBounds);
     }
 

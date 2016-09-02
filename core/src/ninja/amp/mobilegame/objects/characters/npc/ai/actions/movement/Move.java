@@ -17,6 +17,7 @@ public class Move implements Action {
 
         force = new Force() {
             Vector2 vector = new Vector2();
+
             @Override
             public Vector2 calculate(Entity entity, float delta) {
                 return vector.set(entity.getVelocity()).scl(-2).add(target.sub(entity.getPosition()).scl(springConstant)).scl(springConstant);

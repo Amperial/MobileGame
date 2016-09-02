@@ -14,11 +14,11 @@ import ninja.amp.mobilegame.engine.physics.forces.MultiForce;
 import ninja.amp.mobilegame.engine.physics.forces.SimpleForce;
 import ninja.amp.mobilegame.engine.physics.forces.StoppingForce;
 import ninja.amp.mobilegame.engine.physics.mass.StaticMass;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.RectangleLimit;
 import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.objects.Entity;
-import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.objects.body.Body;
 import ninja.amp.mobilegame.objects.body.BodyPart;
 import ninja.amp.mobilegame.objects.body.WeaponPart;
@@ -64,9 +64,9 @@ public class Character extends Entity {
 
             @Override
             public Vector2 position() {
-                vector.set(getPosition()).add(4f/16f, 9f/16f);
+                vector.set(getPosition()).add(4f / 16f, 9f / 16f);
                 if (pose.getMove() == Move.RUNNING) {
-                    vector.add(0, Math.abs(MathUtils.sin((body.getPoseTime()*2.5f + 0.25f)* MathUtils.PI))*0.0625f);
+                    vector.add(0, Math.abs(MathUtils.sin((body.getPoseTime() * 2.5f + 0.25f) * MathUtils.PI)) * 0.0625f);
                 }
                 return vector;
             }
@@ -109,7 +109,7 @@ public class Character extends Entity {
         BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 40);
         BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 50);
         BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, 40);
-        BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f/16f, 0);
+        BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f / 16f, 0);
         //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "weapon_left", -3, 5, 0, 4f/16f, 0);
 
         Attack standard = new Attack(new StandardSwordAttack(body), Attack.Type.STANDARD, 0.5f, 0.15f, 0.15f);

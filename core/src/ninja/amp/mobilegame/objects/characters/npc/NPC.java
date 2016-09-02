@@ -1,10 +1,10 @@
 package ninja.amp.mobilegame.objects.characters.npc;
 
 import ninja.amp.mobilegame.engine.physics.mass.Mass;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.characters.npc.ai.Agent;
-import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 
 public abstract class NPC extends Entity implements Agent {
 

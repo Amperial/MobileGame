@@ -1,7 +1,10 @@
 package ninja.amp.mobilegame.map;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import ninja.amp.mobilegame.MobileGame;
 import ninja.amp.mobilegame.engine.physics.collision.EntityHitbox;
 import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
@@ -109,10 +112,11 @@ public class World {
                 new LVector2(0, 0, Limit.VEC2),
                 new StaticMass(1),
                 State.HOSTILE,
-                new EntityHitbox(bat, new Rectangle(-1f/4f, 1f/4f, 3f/4f, 1f/2f))
+                new EntityHitbox(bat, new Rectangle(-1f / 4f, 1f / 4f, 3f / 4f, 1f / 2f))
         );
         bat.setAction(new Follow(bat, 5) {
             Vector2 target = new Vector2();
+
             @Override
             public Vector2 getTarget() {
                 //return target.set(5, 2);
@@ -207,7 +211,7 @@ public class World {
         }
         */
 
-        camera.position.add(((character.getPosition().x+0.5f) * scale - camera.position.x) * delta * elasticity, ((character.getPosition().y + 0.5f + yOffset) * scale - camera.position.y) * delta * elasticity, 0);
+        camera.position.add(((character.getPosition().x + 0.5f) * scale - camera.position.x) * delta * elasticity, ((character.getPosition().y + 0.5f + yOffset) * scale - camera.position.y) * delta * elasticity, 0);
     }
 
     public void render(float delta) {
@@ -263,7 +267,7 @@ public class World {
     public void resize(int width, int height) {
         camera.setToOrtho(false, width, height);
         camera.setLimit(new CubeLimit(new Vector3(camera.viewportWidth / 2, camera.viewportHeight / 2, 0), new Vector3(map.getWidth() - (camera.viewportWidth / 2), map.getHeight() - (camera.viewportHeight / 2), 0)));
-        camera.position.set((character.getPosition().x+0.5f) * scale, (character.getPosition().y + 0.5f + yOffset) * scale, 0);
+        camera.position.set((character.getPosition().x + 0.5f) * scale, (character.getPosition().y + 0.5f + yOffset) * scale, 0);
 
         scale = 16 * width / 300;
         map.setScale(scale);

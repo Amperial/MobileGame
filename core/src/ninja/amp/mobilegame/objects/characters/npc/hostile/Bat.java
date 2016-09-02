@@ -33,9 +33,10 @@ public class Bat extends NPC {
 
         body = new Body() {
             Vector2 temp = new Vector2();
+
             @Override
             public Vector2 position() {
-                return temp.set(getPosition()).add(-6f/32f, 9f/32f);
+                return temp.set(getPosition()).add(-6f / 32f, 9f / 32f);
             }
 
             @Override
@@ -45,33 +46,36 @@ public class Bat extends NPC {
         };
 
         body.setPose(new Pose() {
-            final float offset = (float)Math.random();
-            Position torso = new StaticPosition(0, 0, 0, 0, 18f/32f, 13f/32f, 0) {
+            final float offset = (float) Math.random();
+            Position torso = new StaticPosition(0, 0, 0, 0, 18f / 32f, 13f / 32f, 0) {
                 @Override
                 public float getX() {
                     return body.position().x;
                 }
+
                 @Override
                 public float getY() {
                     return body.position().y;
                 }
+
                 @Override
                 public float getFlippedX() {
                     return body.position().x + getWidth();
                 }
             };
-            Position wing_right = new TreePosition(torso, 12f/32f, 3f/23f, 0, 0, 18f/32f, 21f/32f, -45f) {
+            Position wing_right = new TreePosition(torso, 12f / 32f, 3f / 23f, 0, 0, 18f / 32f, 21f / 32f, -45f) {
                 @Override
                 public float getRotation() {
-                    return super.getRotation() - MathUtils.sin((body.getPoseTime()+offset)*6*MathUtils.PI)*45f;
+                    return super.getRotation() - MathUtils.sin((body.getPoseTime() + offset) * 6 * MathUtils.PI) * 45f;
                 }
             };
-            Position wing_left = new TreePosition(torso, 9f/32f, 3f/32f, 16f/32f, 0, 16f/32f, 21f/32f, 45f) {
+            Position wing_left = new TreePosition(torso, 9f / 32f, 3f / 32f, 16f / 32f, 0, 16f / 32f, 21f / 32f, 45f) {
                 @Override
                 public float getRotation() {
-                    return super.getRotation() + MathUtils.sin((body.getPoseTime()+offset)*6*MathUtils.PI)*45f;
+                    return super.getRotation() + MathUtils.sin((body.getPoseTime() + offset) * 6 * MathUtils.PI) * 45f;
                 }
             };
+
             @Override
             public Position getPosition(String id) {
                 if (id.equals("torso")) {

@@ -28,18 +28,18 @@ public class LightingShader extends Shader {
         for (int i = 0; i < active; i++) {
             Light light = lights[i];
 
-            int i3 = i*3;
-            int i4 = i*4;
+            int i3 = i * 3;
+            int i4 = i * 4;
             color[i4] = light.getColor().x;
-            color[i4+1] = light.getColor().y;
-            color[i4+2] = light.getColor().z;
-            color[i4+3] = light.getIntensity();
+            color[i4 + 1] = light.getColor().y;
+            color[i4 + 2] = light.getColor().z;
+            color[i4 + 3] = light.getIntensity();
             position[i3] = light.getPosition().x;
-            position[i3+1] = light.getPosition().y;
-            position[i3+2] = light.getPosition().z;
+            position[i3 + 1] = light.getPosition().y;
+            position[i3 + 2] = light.getPosition().z;
             attenuation[i3] = light.getAttenuation().x;
-            attenuation[i3+1] = light.getAttenuation().y;
-            attenuation[i3+2] = light.getAttenuation().z;
+            attenuation[i3 + 1] = light.getAttenuation().y;
+            attenuation[i3 + 2] = light.getAttenuation().z;
         }
     }
 

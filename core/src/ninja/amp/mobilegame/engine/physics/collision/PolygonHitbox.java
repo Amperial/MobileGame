@@ -42,7 +42,7 @@ public class PolygonHitbox implements Hitbox {
     @Override
     public boolean intersects(Hitbox hitbox) {
         if (hitbox instanceof PolygonHitbox) {
-            return Intersector.overlapConvexPolygons(getPolygon(), ((PolygonHitbox)hitbox).getPolygon());
+            return Intersector.overlapConvexPolygons(getPolygon(), ((PolygonHitbox) hitbox).getPolygon());
         } else {
             return hitbox.intersects(this);
         }

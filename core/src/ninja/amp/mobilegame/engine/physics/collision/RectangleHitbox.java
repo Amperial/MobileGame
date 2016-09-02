@@ -22,7 +22,7 @@ public class RectangleHitbox extends PolygonHitbox {
         float right = left + rectangle.getWidth();
         float bottom = rectangle.getY();
         float top = bottom + rectangle.getHeight();
-        return new float[] {
+        return new float[]{
                 left, bottom,
                 right, bottom,
                 right, top,

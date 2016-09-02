@@ -1,6 +1,9 @@
 package ninja.amp.mobilegame.screens.game;
 
 import com.badlogic.gdx.Gdx;
+import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.RegionTexture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 import ninja.amp.mobilegame.engine.gui.Object;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
@@ -11,9 +14,6 @@ import ninja.amp.mobilegame.engine.gui.menus.Menu;
 import ninja.amp.mobilegame.engine.gui.menus.TabButton;
 import ninja.amp.mobilegame.engine.gui.menus.TabMenu;
 import ninja.amp.mobilegame.engine.gui.misc.TileStatusBar;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
-import ninja.amp.mobilegame.engine.graphics.RegionTexture;
-import ninja.amp.mobilegame.engine.graphics.Texture;
 import ninja.amp.mobilegame.engine.resources.audio.Sound;
 import ninja.amp.mobilegame.screens.Screen;
 

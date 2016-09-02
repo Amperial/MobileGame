@@ -11,7 +11,7 @@ import ninja.amp.mobilegame.screens.Screen;
 public class Longsword extends Sword {
 
     public Longsword(String name, Mass mass, Screen screen) {
-        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/swords/longsword"), screen), new StaticPosition(0, 0, 4f/24f, 4.5f/24f, 7f/24f, 32f/24f, 90f));
+        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/swords/longsword"), screen), new StaticPosition(0, 0, 4f / 24f, 4.5f / 24f, 7f / 24f, 32f / 24f, 90f));
     }
 
     @Override

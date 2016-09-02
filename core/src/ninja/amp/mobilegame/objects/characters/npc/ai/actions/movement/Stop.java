@@ -16,6 +16,7 @@ public class Stop implements Action {
         if (yAxis) {
             force = new Force() {
                 Vector2 vector = new Vector2();
+
                 @Override
                 public Vector2 calculate(Entity entity, float delta) {
                     return vector.set(entity.getVelocity()).scl(-acceleration);
@@ -24,6 +25,7 @@ public class Stop implements Action {
         } else {
             force = new Force() {
                 Vector2 vector = new Vector2();
+
                 @Override
                 public Vector2 calculate(Entity entity, float delta) {
                     return vector.set(entity.getVelocity().x, 0).scl(-acceleration);

@@ -1,10 +1,10 @@
 package ninja.amp.mobilegame.engine.gui.buttons;
 
+import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.gui.Anchor;
 import ninja.amp.mobilegame.engine.gui.Object;
 import ninja.amp.mobilegame.engine.gui.Offset;
 import ninja.amp.mobilegame.engine.gui.Origin;
-import ninja.amp.mobilegame.engine.gui.Anchor;
-import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class Button extends Object {
 

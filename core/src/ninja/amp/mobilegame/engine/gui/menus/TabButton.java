@@ -1,11 +1,11 @@
 package ninja.amp.mobilegame.engine.gui.menus;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 import ninja.amp.mobilegame.engine.gui.Anchor;
 import ninja.amp.mobilegame.engine.gui.Offset;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.buttons.Button;
-import ninja.amp.mobilegame.engine.graphics.Texture;
 
 public class TabButton extends Button {
 

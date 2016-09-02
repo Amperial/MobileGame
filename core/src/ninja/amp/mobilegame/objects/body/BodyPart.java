@@ -26,6 +26,7 @@ public class BodyPart implements Positionable {
 
         body.addBodyPart(this);
     }
+
     public BodyPart(Body body, String id, Texture texture, int depth, int flippedDepth, float elasticity) {
         this(body, id, texture, depth, flippedDepth, new ElasticPosition(body.getPose().getPosition(id), elasticity));
     }

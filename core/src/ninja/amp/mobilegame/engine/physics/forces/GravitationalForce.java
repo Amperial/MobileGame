@@ -9,7 +9,7 @@ public class GravitationalForce extends Force {
     private float strength;
 
     private Vector2 vector = new Vector2();
-    
+
     public GravitationalForce(Entity target, float strength) {
         this.target = target;
         this.strength = strength;

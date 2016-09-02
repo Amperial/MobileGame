@@ -11,7 +11,7 @@ import ninja.amp.mobilegame.screens.Screen;
 public class Hammer extends Axe {
 
     public Hammer(String name, Mass mass, Screen screen) {
-        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/axes/hammer"), screen), new StaticPosition(0, 0, 7f/24f, 5.5f/24f, 14f/24f, 30f/24f, 90f));
+        super(name, mass, new RegionTexture(new Atlas(Gdx.files.internal("items.pack"), screen).findRegion("weapons/axes/hammer"), screen), new StaticPosition(0, 0, 7f / 24f, 5.5f / 24f, 14f / 24f, 30f / 24f, 90f));
     }
 
     @Override

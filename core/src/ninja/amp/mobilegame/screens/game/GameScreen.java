@@ -14,18 +14,18 @@ import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.SingleTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
 import ninja.amp.mobilegame.engine.graphics.shaders.FadeShader;
+import ninja.amp.mobilegame.engine.gui.Origin;
+import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
 import ninja.amp.mobilegame.engine.gui.StaticOffset;
+import ninja.amp.mobilegame.engine.gui.buttons.Button;
 import ninja.amp.mobilegame.engine.gui.buttons.HoverableButton;
 import ninja.amp.mobilegame.engine.gui.buttons.PressableButton;
 import ninja.amp.mobilegame.engine.gui.input.MultiProcessor;
+import ninja.amp.mobilegame.engine.gui.menus.Menu;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.engine.transitions.MenuInTransition;
 import ninja.amp.mobilegame.map.World;
-import ninja.amp.mobilegame.engine.gui.buttons.Button;
-import ninja.amp.mobilegame.engine.gui.menus.Menu;
-import ninja.amp.mobilegame.engine.gui.Origin;
-import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
 import ninja.amp.mobilegame.objects.characters.Character;
 import ninja.amp.mobilegame.objects.characters.movement.input.ButtonHoverInput;
 import ninja.amp.mobilegame.objects.characters.movement.input.ButtonPressInput;
@@ -40,7 +40,7 @@ public class GameScreen extends Screen {
 
     private Button playButton;
     private boolean paused = false;
-    
+
     private World world;
     private Character character;
 
@@ -56,7 +56,7 @@ public class GameScreen extends Screen {
         log = new FPSLogger();
 
         Background sky = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_0.png"), this), new Vector2(0.1f, 0f), TileMode.REPEAT_X);
-        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(0.5f, 2f),TileMode.REPEAT_X);
+        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(0.5f, 2f), TileMode.REPEAT_X);
         Background water = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this), new Vector2(1f, 1f), TileMode.REPEAT_X);
         background = new BackgroundGroup(sky, land, water);
 
