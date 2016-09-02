@@ -7,6 +7,8 @@ public class GravitationalForce extends Force {
 
     private Entity target;
     private float strength;
+
+    private Vector2 vector = new Vector2();
     
     public GravitationalForce(Entity target, float strength) {
         this.target = target;
@@ -15,14 +17,9 @@ public class GravitationalForce extends Force {
 
     @Override
     public Vector2 calculate(Entity entity, float delta) {
-        Vector2 distance = target.getPosition().cpy().sub(entity.getPosition());
-        float force = strength * target.getMass() * entity.getMass() / distance.len2();
-        return distance.nor().scl(force);
-    }
-
-    @Override
-    public boolean persist(Entity entity, float delta) {
-        return true;
+        vector.set(target.getPosition()).sub(entity.getPosition());
+        float force = strength * target.getMass() * entity.getMass() / vector.len2();
+        return vector.nor().scl(force);
     }
 
 }

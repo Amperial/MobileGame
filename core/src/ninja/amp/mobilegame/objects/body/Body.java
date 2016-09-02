@@ -59,13 +59,17 @@ public abstract class Body implements Poseable {
 
     public abstract Vector2 position();
 
+    public abstract boolean flip();
+
     public void addBodyPart(BodyPart part) {
         parts.add(part);
         flippedParts.add(part);
     }
 
-    public void draw(Batch batch, float delta, boolean flipped) {
+    public void draw(Batch batch, float delta) {
         poseTime += delta;
+
+        boolean flipped = flip();
         if (flipped) {
             for (BodyPart part : flippedParts) {
                 part.draw(batch, delta, true);

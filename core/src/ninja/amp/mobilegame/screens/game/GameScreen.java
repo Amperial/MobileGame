@@ -18,12 +18,20 @@ import ninja.amp.mobilegame.engine.gui.StaticOffset;
 import ninja.amp.mobilegame.engine.gui.buttons.HoverableButton;
 import ninja.amp.mobilegame.engine.gui.buttons.PressableButton;
 import ninja.amp.mobilegame.engine.gui.input.MultiProcessor;
+import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
+import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.engine.transitions.MenuInTransition;
 import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.engine.gui.buttons.Button;
 import ninja.amp.mobilegame.engine.gui.menus.Menu;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
+import ninja.amp.mobilegame.objects.characters.Character;
+import ninja.amp.mobilegame.objects.characters.movement.input.ButtonHoverInput;
+import ninja.amp.mobilegame.objects.characters.movement.input.ButtonPressInput;
+import ninja.amp.mobilegame.objects.characters.movement.input.Input;
+import ninja.amp.mobilegame.objects.characters.movement.input.RisingInput;
+import ninja.amp.mobilegame.objects.characters.movement.input.XorInput;
 import ninja.amp.mobilegame.screens.Screen;
 import ninja.amp.mobilegame.screens.home.HomeScreen;
 import ninja.amp.mobilegame.screens.home.SettingsMenu;
@@ -34,6 +42,7 @@ public class GameScreen extends Screen {
     private boolean paused = false;
     
     private World world;
+    private Character character;
 
     private Background background;
 
@@ -57,41 +66,10 @@ public class GameScreen extends Screen {
 
         // TODO: Move control menu to separate class
         Menu controlMenu = new Menu(this);
-        Button leftButton = new HoverableButton(new RegionTexture(gui.findRegion("controls/left"), this), new RegionTexture(gui.findRegion("controls/left_pressed"), this), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new StaticOffset(1, 1)) {
-            @Override
-            public void setHovered(int pointer) {
-                super.setHovered(pointer);
-                if (pointer < 0) {
-                    world.left = false;
-                } else {
-                    world.left = true;
-                }
-                // TODO: Left
-            }
-        };
-        Button rightButton = new HoverableButton(new RegionTexture(gui.findRegion("controls/right"), this), new RegionTexture(gui.findRegion("controls/right_pressed"), this), leftButton, Origin.BOTTOM_LEFT, new StaticOffset(leftButton.getWidth(), 0)) {
-            @Override
-            public void setHovered(int pointer) {
-                super.setHovered(pointer);
-                if (pointer < 0) {
-                    world.right = false;
-                } else {
-                    world.right = true;
-                }
-                // TODO: Right
-            }
-        };
-        Button upButton = new PressableButton(new RegionTexture(gui.findRegion("controls/up"), this), new RegionTexture(gui.findRegion("controls/up_pressed"), this), new ScreenAnchor(1, 0), Origin.BOTTOM_RIGHT, new StaticOffset(-1, 1)) {
-            @Override
-            public void setPressed(int pressed) {
-                super.setPressed(pressed);
-                if (isPressed()) {
-                    world.jump = true;
-                    // TODO: Jump
-                }
-            }
-        };
-        Button controlButton = new PressableButton(new RegionTexture(gui.findRegion("controls/control"), this), new RegionTexture(gui.findRegion("controls/control_pressed"), this), upButton, Origin.BOTTOM_RIGHT, new StaticOffset(-upButton.getWidth(), 0));
+        final Button leftButton = new HoverableButton(new RegionTexture(gui.findRegion("controls/left"), this), new RegionTexture(gui.findRegion("controls/left_pressed"), this), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new StaticOffset(1, 1));
+        final Button rightButton = new HoverableButton(new RegionTexture(gui.findRegion("controls/right"), this), new RegionTexture(gui.findRegion("controls/right_pressed"), this), leftButton, Origin.BOTTOM_LEFT, new StaticOffset(leftButton.getWidth(), 0));
+        final Button upButton = new PressableButton(new RegionTexture(gui.findRegion("controls/up"), this), new RegionTexture(gui.findRegion("controls/up_pressed"), this), new ScreenAnchor(1, 0), Origin.BOTTOM_RIGHT, new StaticOffset(-1, 1));
+        final Button controlButton = new PressableButton(new RegionTexture(gui.findRegion("controls/control"), this), new RegionTexture(gui.findRegion("controls/control_pressed"), this), upButton, Origin.BOTTOM_RIGHT, new StaticOffset(-upButton.getWidth(), 0));
         Button pauseButton = new Button(new RegionTexture(gui.findRegion("pause"), this), new ScreenAnchor(1, 1), Origin.TOP_RIGHT, new StaticOffset(-1, -1)) {
             @Override
             public void click() {
@@ -139,6 +117,11 @@ public class GameScreen extends Screen {
         addMenu("settings", new SettingsMenu(this, pauseMenu));
         addMenu("character", new CharacterMenu(this)); // TEMP
         setActiveMenu(controlMenu);
+
+        Input left = new ButtonHoverInput(leftButton);
+        Input right = new ButtonHoverInput(rightButton);
+        character = new Character(this, world, new LVector2(1, 1, Limit.VEC2), new XorInput(left, right), new XorInput(right, left), new RisingInput(new ButtonPressInput(upButton)), new ButtonPressInput(controlButton));
+        world.setCharacter(character);
 
         updateCamera();
     }

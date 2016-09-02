@@ -27,7 +27,7 @@ public class Bat extends NPC {
     private Action action;
 
     public Bat(Screen screen, World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, State state, Hitbox hitbox) {
-        super(world, position, velocity, acceleration, mass, state, hitbox);
+        super(world, position, velocity, acceleration, mass, state);
 
         Atlas hostile = new Atlas(Gdx.files.internal("entities/hostile.pack"), screen);
 
@@ -36,6 +36,11 @@ public class Bat extends NPC {
             @Override
             public Vector2 position() {
                 return temp.set(getPosition()).add(-6f/32f, 9f/32f);
+            }
+
+            @Override
+            public boolean flip() {
+                return getVelocity().x > 0;
             }
         };
 

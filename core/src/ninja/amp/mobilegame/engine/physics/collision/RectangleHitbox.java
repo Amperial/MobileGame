@@ -1,22 +1,33 @@
 package ninja.amp.mobilegame.engine.physics.collision;
 
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
-import com.badlogic.gdx.math.Vector2;
 
-public abstract class RectangleHitbox extends Shape2DHitbox {
+public class RectangleHitbox extends PolygonHitbox {
 
     private Rectangle rectangle;
 
     public RectangleHitbox(Rectangle rectangle) {
+        super(new Polygon(rectangleVertices(rectangle)));
+
         this.rectangle = rectangle;
     }
 
-    @Override
-    public Shape2D getShape() {
-        return rectangle.setPosition(getPosition());
+    public Rectangle getRectangle() {
+        return rectangle;
     }
 
-    public abstract Vector2 getPosition();
+    public static float[] rectangleVertices(Rectangle rectangle) {
+        float left = rectangle.getX();
+        float right = left + rectangle.getWidth();
+        float bottom = rectangle.getY();
+        float top = bottom + rectangle.getHeight();
+        return new float[] {
+                left, bottom,
+                right, bottom,
+                right, top,
+                left, top
+        };
+    }
 
 }

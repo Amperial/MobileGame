@@ -13,15 +13,16 @@ public class Entity {
     private LVector2 velocity;
     private LVector2 acceleration;
     private Mass mass;
-    private Hitbox hitbox;
 
-    public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, Hitbox hitbox) {
+    private Hitbox hitbox;
+    private float immunity;
+
+    public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass) {
         this.world = world;
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
-        this.hitbox = hitbox;
     }
 
     public World getWorld() {
@@ -68,6 +69,19 @@ public class Entity {
         this.hitbox = hitbox;
     }
 
+    public boolean isImmune() {
+        return immunity > 0;
+    }
+
+    public boolean attack(float immunity) {
+        if (isImmune()) {
+            return false;
+        } else {
+            this.immunity = immunity;
+            return true;
+        }
+    }
+
     public void applyForce(Vector2 force) {
         acceleration.add(force);
     }
@@ -83,6 +97,13 @@ public class Entity {
         //position.add(velocity.cpy().scl(deltaTime));
         world.map.move(this, velocity.cpy().scl(deltaTime));
         position.limit();
+
+        if (immunity > 0) {
+            immunity -= deltaTime;
+            if (immunity < 0) {
+                immunity = 0;
+            }
+        }
     }
 
 }

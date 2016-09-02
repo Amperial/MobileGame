@@ -1,4 +1,4 @@
-package ninja.amp.mobilegame.map.tiles;
+package ninja.amp.mobilegame.map.old;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

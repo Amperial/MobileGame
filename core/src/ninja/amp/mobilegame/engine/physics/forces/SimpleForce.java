@@ -5,22 +5,18 @@ import ninja.amp.mobilegame.objects.Entity;
 
 public class SimpleForce extends Force {
 
-    private Vector2 force;
-    private boolean persist;
+    public static Force GRAVITY = new SimpleForce(new Vector2(0, -30));
 
-    public SimpleForce(Vector2 force, boolean persist) {
+    private Vector2 force;
+    private Vector2 vector = new Vector2();
+
+    public SimpleForce(Vector2 force) {
         this.force = force;
-        this.persist = persist;
     }
 
     @Override
     public Vector2 calculate(Entity entity, float delta) {
-        return force;
-    }
-
-    @Override
-    public boolean persist(Entity entity, float delta) {
-        return persist;
+        return vector.set(force);
     }
 
 }

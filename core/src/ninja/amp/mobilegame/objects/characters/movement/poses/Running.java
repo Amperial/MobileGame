@@ -41,7 +41,7 @@ public class Running implements Pose {
         Position arm_left_upper = new TreePosition(torso, 0.25f, 5f/8f, 1f/16f, 1f/16f, 1f/8f, 3f/8f, 180f) {
             @Override
             public float getRotation() {
-                return super.getRotation() + MathUtils.sin((body.getPoseTime()*2.5f + 1)*MathUtils.PI)*45;
+                return super.getRotation() + MathUtils.sin(body.getPoseTime()*2.5f*MathUtils.PI)*45;
             }
         };
         positions.put("arm_left_upper", arm_left_upper);
@@ -49,7 +49,7 @@ public class Running implements Pose {
             int[] angles = {30, 45, 55, 60, 50, 30, 0, 15};
             @Override
             public float getRotation() {
-                float current = body.getPoseTime()*10 + 4.5f;
+                float current = body.getPoseTime()*10 + 0.5f;
                 int frame = (int)(current)%8;
                 return super.getRotation() + MathUtils.lerp(frame == 0 ? angles[7] : angles[frame - 1], angles[frame], current - (int)current);
             }
@@ -58,7 +58,7 @@ public class Running implements Pose {
         Position arm_right_upper = new TreePosition(torso, 0.25f, 5f/8f, 1f/16f, 1f/16f, 1f/8f, 3f/8f, 180f) {
             @Override
             public float getRotation() {
-                return super.getRotation() + MathUtils.sin(body.getPoseTime()*2.5f*MathUtils.PI)*45;
+                return super.getRotation() + MathUtils.sin((body.getPoseTime()*2.5f + 1)*MathUtils.PI)*45;
             }
         };
         positions.put("arm_right_upper", arm_right_upper);
@@ -66,7 +66,7 @@ public class Running implements Pose {
             int[] angles = {30, 45, 55, 60, 50, 30, 0, 15};
             @Override
             public float getRotation() {
-                float current = body.getPoseTime()*10 + 0.5f;
+                float current = body.getPoseTime()*10 + 4.5f;
                 int frame = (int)(current)%8;
                 return super.getRotation() + MathUtils.lerp(frame == 0 ? angles[7] : angles[frame - 1], angles[frame], current - (int)current);
             }
