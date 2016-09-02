@@ -53,7 +53,7 @@ public class Character extends Entity {
                 new StaticMass(1)
         );
 
-        setHitbox(new EntityHitbox(this, new Rectangle(3f / 16f, 0, 10f / 16f, 30f / 16f)));
+        setHitbox(new EntityHitbox(this, new Rectangle(2f / 16f, 0, 12f / 16f, 30f / 16f)));
 
         Atlas bodyAtlas = new Atlas(Gdx.files.internal("entities/character.pack"), screen);
         body = new Body() {
@@ -101,10 +101,10 @@ public class Character extends Entity {
         body.setPose(new Idle(body));
         BodyPart torso = new BodyPart(body, "torso", new RegionTexture(bodyAtlas.findRegion("body"), screen), 0, 1);
         BodyPart head = new BodyPart(body, "head", new RegionTexture(bodyAtlas.findRegion("head"), screen), 1, 2);
-        BodyPart arm_left_upper = new BodyPart(body, "arm_left_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), -5, 7, 50);
-        BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -4, 6, 30);
-        BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, 50);
-        BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, 30);
+        BodyPart arm_left_upper = new BodyPart(body, "arm_left_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), -5, 7, 40);
+        BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -4, 6, 20);
+        BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, 40);
+        BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, 20);
         BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, 50);
         BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 40);
         BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 50);
@@ -125,8 +125,11 @@ public class Character extends Entity {
             private Force move_right = new SimpleForce(new Vector2(100, 0));
             private Force move_jump = new MultiForce(new StoppingForce(new Vector2(0, 1)), new Impulse(new Vector2(0, 12.5f)));
             private Force friction_air = new FrictionForce(new Vector2(5, 0));
-            private Force friction_ground = new FrictionForce(new Vector2(10, 0));
+            private Force friction_ground = new FrictionForce(new Vector2(20, 0));
             private Force direction_change = new StoppingForce(new Vector2(1, 0));
+            private boolean falling_lastframe = false;
+            private boolean has_jumpchance = false;
+            private boolean airjump = true;
 
             @Override
             public void update(Entity entity, float delta) {
@@ -152,9 +155,23 @@ public class Character extends Entity {
                 }
 
                 // Vertical movement
+                if (!isFalling()) {
+                    airjump = true;
+                    falling_lastframe = false;
+                    has_jumpchance = true;
+                } else {
+                    if (!falling_lastframe) {
+                        falling_lastframe = true;
+                    } else {
+                        has_jumpchance = false;
+                    }
+                }
                 entity.applyForce(SimpleForce.GRAVITY.calculate(entity, delta));
-                if (jump.getInput()) {
+                if (jump.getInput() && (!isFalling() || airjump)) {
                     entity.applyForce(move_jump.calculate(entity, delta));
+                    if (isFalling() && !has_jumpchance) {
+                        airjump = false;
+                    }
                 }
             }
         };

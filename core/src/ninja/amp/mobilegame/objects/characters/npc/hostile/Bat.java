@@ -2,10 +2,11 @@ package ninja.amp.mobilegame.objects.characters.npc.hostile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.graphics.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
-import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
+import ninja.amp.mobilegame.engine.physics.collision.EntityHitbox;
 import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.map.World;
@@ -26,8 +27,10 @@ public class Bat extends NPC {
     private Body body;
     private Action action;
 
-    public Bat(Screen screen, World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, State state, Hitbox hitbox) {
+    public Bat(Screen screen, World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, State state) {
         super(world, position, velocity, acceleration, mass, state);
+
+        setHitbox(new EntityHitbox(this, new Rectangle(-1f / 4f, 1f / 4f, 3f / 4f, 1f / 2f)));
 
         Atlas hostile = new Atlas(Gdx.files.internal("entities/hostile.pack"), screen);
 

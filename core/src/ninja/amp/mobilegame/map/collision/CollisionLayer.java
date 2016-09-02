@@ -1,67 +1,29 @@
-package ninja.amp.mobilegame.map.old;
+package ninja.amp.mobilegame.map.collision;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.physics.collision.RectangleHitbox;
+import ninja.amp.mobilegame.map.Map;
 import ninja.amp.mobilegame.objects.Entity;
 
-public class TileMap {
+public class CollisionLayer {
 
-    private Tile[][][] tiles;
-    private float scale;
-
-    public int width = 100;
-    public int height = 50;
+    private Map map;
+    private Collision[][] tiles;
 
     private Rectangle defaultHitbox = new Rectangle(0, 0, 1, 1);
 
-    public TileMap() {
-        CastleTile.load();
-
-        tiles = new Tile[width][height][];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                tiles[x][y] = new Tile[1];
-            }
-        }
-        for (int x = 0; x < width; x++) {
-            for (int y = 1; y < height; y++) {
-                tiles[x][y][0] = CastleTile.BRICK_1;
-            }
-            tiles[x][0][0] = CastleTile.SOLID_FLOOR;
-        }
-
-        tiles[9][2][0] = CastleTile.SOLID_FLOOR;
-        tiles[13][4][0] = CastleTile.SOLID_FLOOR;
-        tiles[14][4][0] = CastleTile.SOLID_FLOOR;
-        tiles[14][5][0] = CastleTile.SOLID_FLOOR;
-        tiles[15][5][0] = CastleTile.SOLID_FLOOR;
-        tiles[15][6][0] = CastleTile.SOLID_FLOOR;
-        tiles[16][2][0] = CastleTile.SOLID_FLOOR;
-        tiles[17][1][0] = CastleTile.SOLID_FLOOR;
-        tiles[17][2][0] = CastleTile.SOLID_FLOOR;
-        tiles[19][1][0] = CastleTile.SOLID_FLOOR;
-        tiles[19][2][0] = CastleTile.SOLID_FLOOR;
-        tiles[19][3][0] = CastleTile.SOLID_FLOOR;
-        tiles[7][6][0] = CastleTile.SOLID_FLOOR;
-        tiles[8][6][0] = CastleTile.SOLID_FLOOR;
-        tiles[9][6][0] = CastleTile.SOLID_FLOOR;
-        tiles[10][6][0] = CastleTile.SOLID_FLOOR;
-
-
+    public CollisionLayer(Map map) {
+        this.map = map;
     }
 
-    public void draw(Batch batch, int xs, int xm, int ys, int ym) {
-        for (int x = xs; x < xm; x++) {
-            for (int y = ys; y < ym; y++) {
-                for (Tile tile : tiles[x][y]) {
-                    if (tile != null) {
-                        // TODO: Dont render tiles that wont be visible
-                        batch.draw(tile.getTexture(), x * scale, y * scale, scale, scale);
-                    }
-                }
+    public void loadTiles(int[][] tiles, int width, int height) {
+        this.tiles = new Collision[width][height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                this.tiles[x][y] = Collision.fromOrdinal(tiles[x][y]);
             }
         }
     }
@@ -111,10 +73,13 @@ public class TileMap {
                 }
             }
 
-            if (x != 0) {
+            if (x != 0f) {
                 entity.getVelocity().x = 0;
             }
         }
+
+        covered_xmin = (int) (position.x + hitbox_x);
+        covered_xmax = MathUtils.ceilPositive(position.x + hitbox_x + hitbox_w) - 1;
 
         if (vector.y != 0f) {
             float y = vector.y;
@@ -143,7 +108,7 @@ public class TileMap {
                 }
             }
 
-            if (y != 0) {
+            if (y != 0f) {
                 entity.getVelocity().y = 0;
             }
         }
@@ -152,28 +117,12 @@ public class TileMap {
     private boolean solid_area(int x_min, int x_max, int y_min, int y_max) {
         for (int x = x_min; x <= x_max; x++) {
             for (int y = y_min; y <= y_max; y++) {
-                if (tiles[x][y][0].isSolid()) {
+                if (tiles[x][y] == Collision.SOLID) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public float getWidth() {
-        return width * scale;
-    }
-
-    public float getHeight() {
-        return height * scale;
-    }
-
-    public void dispose() {
-        CastleTile.dispose();
-    }
-
-    public void setScale(float scale) {
-        this.scale = scale;
     }
 
 }

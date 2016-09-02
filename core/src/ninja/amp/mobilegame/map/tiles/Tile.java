@@ -6,8 +6,4 @@ public interface Tile {
 
     TextureRegion getTexture();
 
-    TextureRegion getNormal();
-
-    boolean isSolid();
-
 }

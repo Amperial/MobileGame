@@ -56,9 +56,9 @@ public class GameScreen extends Screen {
         log = new FPSLogger();
 
         Background sky = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_0.png"), this), new Vector2(0.1f, 0f), TileMode.REPEAT_X);
-        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(0.5f, 2f), TileMode.REPEAT_X);
-        Background water = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this), new Vector2(1f, 1f), TileMode.REPEAT_X);
-        background = new BackgroundGroup(sky, land, water);
+        Background land = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_1.png"), this), new Vector2(0.5f, 0.5f), new Vector2(0, -12f), TileMode.REPEAT_X);
+        //Background water = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this), new Vector2(1f, 0.25f), TileMode.REPEAT_X);
+        background = new BackgroundGroup(sky, land);
 
         world = new World(game, this);
 

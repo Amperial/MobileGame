@@ -86,20 +86,20 @@ public class Entity {
         acceleration.add(force);
     }
 
-    public void update(float deltaTime) {
+    public void update(float delta) {
         acceleration.scl(1 / mass.getMass());
         acceleration.limit();
 
-        velocity.add(acceleration.cpy().scl(deltaTime));
+        velocity.add(acceleration.cpy().scl(delta));
         acceleration.setZero();
         velocity.limit();
 
         //position.add(velocity.cpy().scl(deltaTime));
-        world.map.move(this, velocity.cpy().scl(deltaTime));
+        world.map.getCollision().move(this, velocity.cpy().scl(delta));
         position.limit();
 
         if (immunity > 0) {
-            immunity -= deltaTime;
+            immunity -= delta;
             if (immunity < 0) {
                 immunity = 0;
             }
