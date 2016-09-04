@@ -53,7 +53,7 @@ public class Character extends Entity {
                 new StaticMass(1)
         );
 
-        setHitbox(new EntityHitbox(this, new Rectangle(2f / 16f, 0, 12f / 16f, 30f / 16f)));
+        setHitbox(new EntityHitbox(this, new Rectangle(3f / 16f, 0, 10f / 16f, 30f / 16f)));
 
         Atlas bodyAtlas = new Atlas(Gdx.files.internal("entities/character.pack"), screen);
         body = new Body() {

@@ -8,26 +8,20 @@ public class TileLayer {
     private Map map;
     private float scale;
 
-    protected Tile[][] tiles;
+    private Tile[][] tiles;
 
     public TileLayer(Map map) {
         this.map = map;
     }
 
     public void loadTiles(int[][] tiles, int width, int height) {
+        TileSet tileset = map.getTileset();
+
         this.tiles = new Tile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                switch (tiles[x][y]) {
-                    case 0:
-                        this.tiles[x][y] = null;
-                        break;
-                    case 1:
-                        this.tiles[x][y] = null;
-                        break;
-                    case 2:
-                        this.tiles[x][y] = null;
-                        break;
+                if (tiles[x][y] >= 0) {
+                    this.tiles[x][y] = tileset.getTileContainer(tiles[x][y]).getTile(tiles, x, y);
                 }
             }
         }

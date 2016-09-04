@@ -9,15 +9,21 @@ import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 public class Atlas implements Resource {
 
     private TextureAtlas atlas;
+    private ResourceHandler handler;
 
     public Atlas(FileHandle file, ResourceHandler handler) {
         this.atlas = new TextureAtlas(file);
+        this.handler = handler;
 
         handler.attachResource(this);
     }
 
     public TextureRegion findRegion(String name) {
         return atlas.findRegion(name);
+    }
+
+    public Texture createRegionTexture(String name) {
+        return new RegionTexture(findRegion(name), handler);
     }
 
     @Override

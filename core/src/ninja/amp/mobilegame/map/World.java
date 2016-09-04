@@ -49,7 +49,7 @@ public class World {
         camera = new ScreenCamera(screen, Limit.VEC3); // TODO: set camera initial position
 
         MapLoader loader = new MapLoader(Gdx.files.internal("maps/1/map.txt"));
-        map = loader.loadMap();
+        map = loader.loadMap(screen);
 
         //sword is 5f/24f thick, 1 long starting at 8f/24f
         /*

@@ -3,35 +3,40 @@ package ninja.amp.mobilegame.map;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 
 public class MapLoader {
 
+    private int level;
+    private String name;
     private int width;
     private int height;
+    private JsonValue tileset;
     private int[][] foreground;
     private int[][] midground;
     private int[][] background;
     private int[][] collision;
 
     public MapLoader(FileHandle handle) {
-        JsonValue value = new JsonReader().parse(handle);
+        JsonValue map = new JsonReader().parse(handle);
 
-        String tiles = value.getString("tiles");
+        level = map.getInt("level");
+        name = map.getString("name");
 
-        width = value.getInt("width");
-        height = value.getInt("height");
+        width = map.getInt("width");
+        height = map.getInt("height");
 
-        foreground = new int[width][height];
-        midground = new int[width][height];
-        background = new int[width][height];
-        collision = new int[width][height];
-        parseTiles(value.getString("foreground"), foreground);
-        parseTiles(value.getString("midground"), midground);
-        parseTiles(value.getString("background"), background);
-        parseTiles(value.getString("collision"), collision);
+        tileset = map.get("tiles");
+
+        foreground = parseTiles(map.getString("foreground"));
+        midground = parseTiles(map.getString("midground"));
+        background = parseTiles(map.getString("background"));
+
+        collision = parseTiles(map.getString("collision"));
     }
 
-    public void parseTiles(String tiles, int[][] array) {
+    public int[][] parseTiles(String tiles) {
+        int[][] array = new int[width][height];
         int y = height - 1;
         for (String row : tiles.split("\\r?\\n")) {
             int x = 0;
@@ -41,14 +46,18 @@ public class MapLoader {
             }
             y--;
         }
+        return array;
     }
 
-    public Map loadMap() {
-        Map map = new Map(width, height);
+    public Map loadMap(ResourceHandler handler) {
+        Map map = new Map(level, name, width, height);
+
+        map.getTileset().loadTileset(tileset, handler);
 
         map.getForeground().loadTiles(foreground, width, height);
         map.getMidground().loadTiles(midground, width, height);
         map.getBackground().loadTiles(background, width, height);
+
         map.getCollision().loadTiles(collision, width, height);
 
         return map;
