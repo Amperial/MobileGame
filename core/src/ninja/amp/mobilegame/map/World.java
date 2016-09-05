@@ -255,6 +255,10 @@ public class World {
     }
     */
 
+    public Map getMap() {
+        return map;
+    }
+
     public float getbackgroundx() {
         return (map.getWidth() / 2) - camera.position.x;
     }

@@ -73,6 +73,10 @@ public class Entity {
         return immunity > 0;
     }
 
+    public boolean isOnGround() {
+        return world.getMap().getCollision().isOnGround(this);
+    }
+
     public boolean attack(float immunity) {
         if (isImmune()) {
             return false;

@@ -105,10 +105,10 @@ public class Character extends Entity {
         BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -4, 6, 20);
         BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, 40);
         BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, 20);
-        BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, 50);
-        BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 40);
-        BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 50);
-        BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, 40);
+        BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, 40);
+        BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 30);
+        BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 40);
+        BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, 30);
         BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f / 16f, 0);
         //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "weapon_left", -3, 5, 0, 4f/16f, 0);
 
@@ -133,29 +133,31 @@ public class Character extends Entity {
 
             @Override
             public void update(Entity entity, float delta) {
+                boolean onGround = isOnGround();
+
                 // Horizontal movement
                 if (left.getInput()) {
-                    if (entity.getVelocity().x > 0 && !isFalling()) {
+                    if (entity.getVelocity().x > 0 && onGround) {
                         entity.applyForce(direction_change.calculate(entity, delta));
                     }
                     entity.applyForce(move_left.calculate(entity, delta));
                     flip = true;
                 } else if (right.getInput()) {
-                    if (entity.getVelocity().x < 0 && !isFalling()) {
+                    if (entity.getVelocity().x < 0 && onGround) {
                         entity.applyForce(direction_change.calculate(entity, delta));
                     }
                     entity.applyForce(move_right.calculate(entity, delta));
                     flip = false;
                 } else {
-                    if (isFalling()) {
-                        entity.applyForce(friction_air.calculate(entity, delta));
-                    } else {
+                    if (onGround) {
                         entity.applyForce(friction_ground.calculate(entity, delta));
+                    } else {
+                        entity.applyForce(friction_air.calculate(entity, delta));
                     }
                 }
 
                 // Vertical movement
-                if (!isFalling()) {
+                if (onGround) {
                     airjump = true;
                     falling_lastframe = false;
                     has_jumpchance = true;
@@ -167,9 +169,9 @@ public class Character extends Entity {
                     }
                 }
                 entity.applyForce(SimpleForce.GRAVITY.calculate(entity, delta));
-                if (jump.getInput() && (!isFalling() || airjump)) {
+                if (jump.getInput() && (onGround || airjump)) {
                     entity.applyForce(move_jump.calculate(entity, delta));
-                    if (isFalling() && !has_jumpchance) {
+                    if (!onGround && !has_jumpchance) {
                         airjump = false;
                     }
                 }
@@ -194,7 +196,7 @@ public class Character extends Entity {
                     return Move.IMMUNE;
                 } else if (attack.isAttacking()) {
                     return Move.ATTACKING;
-                } else if (isFalling()) {
+                } else if (!isOnGround()) {
                     return Move.JUMPING;
                 } else if (getVelocity().x > running_min || getVelocity().x < -running_min) {
                     return Move.RUNNING;
@@ -244,10 +246,6 @@ public class Character extends Entity {
 
         // Update pose controller
         pose.update(this, delta);
-    }
-
-    private boolean isFalling() {
-        return getVelocity().y > 0 || getVelocity().y < 0; // TODO: Check if player is standing on solid tile
     }
 
 }
