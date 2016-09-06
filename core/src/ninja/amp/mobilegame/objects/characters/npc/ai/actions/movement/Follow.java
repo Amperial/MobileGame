@@ -4,14 +4,17 @@ import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.engine.physics.forces.Force;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.characters.npc.ai.actions.Action;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.range.Range;
 
 public abstract class Follow implements Action {
 
     private Entity entity;
+    private Range range;
     private Force force;
 
-    public Follow(Entity entity, final float springConstant) {
+    public Follow(Entity entity, final float springConstant, Range range) {
         this.entity = entity;
+        this.range = range;
 
         force = new Force() {
             Vector2 vector = new Vector2();
@@ -23,9 +26,17 @@ public abstract class Follow implements Action {
         };
     }
 
+    public Follow(Entity entity, float springConstant) {
+        this(entity, springConstant, Range.NONE);
+    }
+
+    public Range getRange() {
+        return range;
+    }
+
     @Override
     public boolean canPerform() {
-        return true;
+        return range.inRange(getTarget());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package ninja.amp.mobilegame.map.tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonValue;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 import ninja.amp.mobilegame.map.Map;
 
@@ -20,7 +20,7 @@ public class TileSet {
     }
 
     public void loadTileset(JsonValue tiles, ResourceHandler handler) {
-        Atlas tileAtlas = new Atlas(Gdx.files.internal("tiles.pack"), handler);
+        Atlas tileAtlas = new Atlas(GameAtlas.TILES, handler);
 
         int length = tiles.size;
         this.tiles = new TileContainer[length];

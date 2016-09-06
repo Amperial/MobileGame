@@ -11,9 +11,9 @@ public class Move implements Action {
     private Vector2 target;
     private Force force;
 
-    public Move(Entity entity, final Vector2 target, final float springConstant) {
+    public Move(Entity entity, Vector2 position, final float springConstant) {
         this.entity = entity;
-        this.target = target;
+        this.target = position;
 
         force = new Force() {
             Vector2 vector = new Vector2();
@@ -45,7 +45,7 @@ public class Move implements Action {
 
     @Override
     public boolean isComplete() {
-        return entity.getPosition().epsilonEquals(target, 0.001f);
+        return entity.getPosition().epsilonEquals(target, 0.01f);
     }
 
 }

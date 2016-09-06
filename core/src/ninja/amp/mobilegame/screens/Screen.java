@@ -39,6 +39,7 @@ public abstract class Screen extends ResourceHandler implements com.badlogic.gdx
     public void setActiveMenu(Menu menu) {
         //transition out activeMenu
         activeMenu = menu;
+        menu.getProcessor().touchUp(-1, -1, 0, -1);
         //transition in activeMenu
         if (!menu.hasTransition()) {
             Gdx.input.setInputProcessor(menu.getProcessor());

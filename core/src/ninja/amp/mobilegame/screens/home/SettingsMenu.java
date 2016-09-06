@@ -1,10 +1,10 @@
 package ninja.amp.mobilegame.screens.home;
 
-import com.badlogic.gdx.Gdx;
 import ninja.amp.mobilegame.MobileGame;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.gui.Object;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
@@ -21,7 +21,7 @@ public class SettingsMenu extends Menu {
     public SettingsMenu(final Screen screen, final Menu parent) {
         super(screen);
 
-        Atlas gui = new Atlas(Gdx.files.internal("gui.pack"), screen);
+        Atlas gui = new Atlas(GameAtlas.GUI, screen);
 
         Texture small_pressed = new RegionTexture(gui.findRegion("buttons/small_pressed"), screen);
         Texture large_pressed = new RegionTexture(gui.findRegion("buttons/large_pressed"), screen);

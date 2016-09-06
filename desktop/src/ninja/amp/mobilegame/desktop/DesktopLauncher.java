@@ -2,11 +2,20 @@ package ninja.amp.mobilegame.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import ninja.amp.mobilegame.MobileGame;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 
 public class DesktopLauncher {
 
 	public static void main (String[] arg) {
+        TexturePacker.Settings settings = new TexturePacker.Settings();
+        settings.duplicatePadding = true;
+        settings.combineSubdirectories = true;
+        for (GameAtlas atlas : GameAtlas.values()) {
+            TexturePacker.process(settings, atlas.getFileName(), "./", atlas.getFileName());
+        }
+
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;

@@ -28,11 +28,13 @@ public class TileLayer {
     }
 
     public void draw(Batch batch, int xs, int xm, int ys, int ym) {
+        Tile tile;
         for (int x = xs; x < xm; x++) {
             for (int y = ys; y < ym; y++) {
-                if (tiles[x][y] != null) {
+                tile = tiles[x][y];
+                if (tile != null) {
                     // TODO: Dont render tiles that wont be visible
-                    batch.draw(tiles[x][y].getTexture(), x * scale, y * scale, scale, scale);
+                    batch.draw(tile.getTexture(), x * scale, y * scale, tile.getWidth() * scale, tile.getHeight() * scale);
                 }
             }
         }

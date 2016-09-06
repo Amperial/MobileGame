@@ -6,4 +6,8 @@ public interface Tile {
 
     TextureRegion getTexture();
 
+    int getWidth();
+
+    int getHeight();
+
 }

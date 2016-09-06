@@ -1,11 +1,11 @@
 package ninja.amp.mobilegame.objects.characters;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.physics.collision.EntityHitbox;
 import ninja.amp.mobilegame.engine.physics.forces.Force;
 import ninja.amp.mobilegame.engine.physics.forces.FrictionForce;
@@ -18,6 +18,7 @@ import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.RectangleLimit;
 import ninja.amp.mobilegame.map.World;
+import ninja.amp.mobilegame.map.collision.CollisionState;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.body.Body;
 import ninja.amp.mobilegame.objects.body.BodyPart;
@@ -26,7 +27,9 @@ import ninja.amp.mobilegame.objects.body.pose.Pose;
 import ninja.amp.mobilegame.objects.characters.movement.Move;
 import ninja.amp.mobilegame.objects.characters.movement.MoveController;
 import ninja.amp.mobilegame.objects.characters.movement.PoseController;
+import ninja.amp.mobilegame.objects.characters.movement.input.AndInput;
 import ninja.amp.mobilegame.objects.characters.movement.input.Input;
+import ninja.amp.mobilegame.objects.characters.movement.input.RisingInput;
 import ninja.amp.mobilegame.objects.characters.movement.poses.Idle;
 import ninja.amp.mobilegame.objects.characters.movement.poses.Jumping;
 import ninja.amp.mobilegame.objects.characters.movement.poses.Running;
@@ -39,7 +42,7 @@ import ninja.amp.mobilegame.screens.game.GameScreen;
 public class Character extends Entity {
 
     private Body body;
-    private AttackController attack;
+    private AttackController attacker;
     private MoveController move;
     private PoseController pose;
     private boolean flip = false;
@@ -55,7 +58,7 @@ public class Character extends Entity {
 
         setHitbox(new EntityHitbox(this, new Rectangle(3f / 16f, 0, 10f / 16f, 30f / 16f)));
 
-        Atlas bodyAtlas = new Atlas(Gdx.files.internal("entities/character.pack"), screen);
+        Atlas entities = new Atlas(GameAtlas.ENTITIES, screen);
         body = new Body() {
             private Vector2 vector = new Vector2();
             private float max_up_velocity = 12.5f;
@@ -78,8 +81,8 @@ public class Character extends Entity {
 
             @Override
             public float getPoseTime() {
-                if (attack.isAttacking()) {
-                    return attack.getAttack().getPoseTime();
+                if (attacker.isAttacking()) {
+                    return attacker.getAttack().getPoseTime();
                 } else if (getVelocity().y > 0 || getVelocity().y < 0) {
                     float y_velocity = getVelocity().y;
                     if (y_velocity > max_up_velocity || y_velocity < max_down_velocity) {
@@ -99,24 +102,38 @@ public class Character extends Entity {
             }
         };
         body.setPose(new Idle(body));
-        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(bodyAtlas.findRegion("body"), screen), 0, 1);
-        BodyPart head = new BodyPart(body, "head", new RegionTexture(bodyAtlas.findRegion("head"), screen), 1, 2);
-        BodyPart arm_left_upper = new BodyPart(body, "arm_left_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), -5, 7, 40);
-        BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), -4, 6, 20);
-        BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(bodyAtlas.findRegion("arm_upper"), screen), 6, -4, 40);
-        BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(bodyAtlas.findRegion("arm_lower"), screen), 5, -3, 20);
-        BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), -2, 4, 40);
-        BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), -1, 3, 30);
-        BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(bodyAtlas.findRegion("leg_upper"), screen), 3, -1, 40);
-        BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(bodyAtlas.findRegion("leg_lower"), screen), 2, 0, 30);
+        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(entities.findRegion("character/body"), screen), 0, 1);
+        BodyPart head = new BodyPart(body, "head", new RegionTexture(entities.findRegion("character/head"), screen), 1, 2);
+        BodyPart arm_left_upper = new BodyPart(body, "arm_left_upper", new RegionTexture(entities.findRegion("character/arm_upper"), screen), -5, 7, 40);
+        BodyPart arm_left_lower = new BodyPart(body, "arm_left_lower", new RegionTexture(entities.findRegion("character/arm_lower"), screen), -4, 6, 20);
+        BodyPart arm_right_upper = new BodyPart(body, "arm_right_upper", new RegionTexture(entities.findRegion("character/arm_upper"), screen), 6, -4, 40);
+        BodyPart arm_right_lower = new BodyPart(body, "arm_right_lower", new RegionTexture(entities.findRegion("character/arm_lower"), screen), 5, -3, 20);
+        BodyPart leg_left_upper = new BodyPart(body, "leg_left_upper", new RegionTexture(entities.findRegion("character/leg_upper"), screen), -2, 4, 40);
+        BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(entities.findRegion("character/leg_lower"), screen), -1, 3, 30);
+        BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(entities.findRegion("character/leg_upper"), screen), 3, -1, 40);
+        BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(entities.findRegion("character/leg_lower"), screen), 2, 0, 30);
         BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f / 16f, 0);
-        //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "weapon_left", -3, 5, 0, 4f/16f, 0);
+        //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "character/weapon_left", -3, 5, 0, 4f/16f, 0);
+
+        final Input fall = new AndInput(new RisingInput(control), new Input() {
+            @Override
+            public boolean getInput() {
+                return isOnPlatform() && !attacker.isAttacking();
+            }
+        });
+        final Input attack = new Input() {
+            private Input attack = new RisingInput(control);
+            @Override
+            public boolean getInput() {
+                return ((attack.getInput() && getCollisionState() != CollisionState.PLATFORM && !isOnPlatform()) || attacker.isAttacking()) && control.getInput();
+            }
+        };
 
         Attack standard = new Attack(new StandardSwordAttack(body), Attack.Type.STANDARD, 0.5f, 0.15f, 0.15f);
-        attack = new AttackController(standard) {
+        attacker = new AttackController(standard) {
             @Override
             public boolean isPressed() {
-                return control.getInput();
+                return attack.getInput();
             }
         };
 
@@ -133,6 +150,10 @@ public class Character extends Entity {
 
             @Override
             public void update(Entity entity, float delta) {
+                if (getCollisionState() == CollisionState.PLATFORM && !isInPlatform()) {
+                    setCollisionState(CollisionState.NORMAL);
+                }
+
                 boolean onGround = isOnGround();
 
                 // Horizontal movement
@@ -174,6 +195,8 @@ public class Character extends Entity {
                     if (!onGround && !has_jumpchance) {
                         airjump = false;
                     }
+                } else if (fall.getInput()) {
+                    setCollisionState(CollisionState.PLATFORM);
                 }
             }
         };
@@ -186,7 +209,7 @@ public class Character extends Entity {
 
             @Override
             public void update(Entity entity, float delta) {
-                attack.update(delta);
+                attacker.update(delta);
                 super.update(entity, delta);
             }
 
@@ -194,7 +217,7 @@ public class Character extends Entity {
             public Move getMove() {
                 if (isImmune()) {
                     return Move.IMMUNE;
-                } else if (attack.isAttacking()) {
+                } else if (attacker.isAttacking()) {
                     return Move.ATTACKING;
                 } else if (!isOnGround()) {
                     return Move.JUMPING;
@@ -212,7 +235,7 @@ public class Character extends Entity {
                     case IMMUNE:
                         return idle;
                     case ATTACKING:
-                        return attack.getAttack().getPose();
+                        return attacker.getAttack().getPose();
                     case JUMPING:
                         return jumping;
                     case RUNNING:

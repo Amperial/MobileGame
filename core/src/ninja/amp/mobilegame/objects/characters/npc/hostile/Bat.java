@@ -1,14 +1,16 @@
 package ninja.amp.mobilegame.objects.characters.npc.hostile;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.physics.collision.EntityHitbox;
-import ninja.amp.mobilegame.engine.physics.mass.Mass;
+import ninja.amp.mobilegame.engine.physics.mass.StaticMass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
+import ninja.amp.mobilegame.engine.physics.vectors.limits.LengthLimit;
+import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.map.World;
 import ninja.amp.mobilegame.objects.body.Body;
 import ninja.amp.mobilegame.objects.body.BodyPart;
@@ -19,20 +21,27 @@ import ninja.amp.mobilegame.objects.body.pose.position.TreePosition;
 import ninja.amp.mobilegame.objects.characters.npc.NPC;
 import ninja.amp.mobilegame.objects.characters.npc.State;
 import ninja.amp.mobilegame.objects.characters.npc.ai.actions.Action;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.ActionList;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.FollowEntity;
 import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.Stop;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.Wander;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.range.Range;
 import ninja.amp.mobilegame.screens.Screen;
 
 public class Bat extends NPC {
 
     private Body body;
+    private Range range;
     private Action action;
 
-    public Bat(Screen screen, World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, State state) {
-        super(world, position, velocity, acceleration, mass, state);
+    public Bat(Screen screen, World world, LVector2 position, Range range) {
+        super(world, position, new LVector2(0, 0, new LengthLimit<Vector2>(10)), new LVector2(Limit.VEC2), new StaticMass(1), State.HOSTILE);
+
+        this.range = range;
 
         setHitbox(new EntityHitbox(this, new Rectangle(-1f / 4f, 1f / 4f, 3f / 4f, 1f / 2f)));
 
-        Atlas hostile = new Atlas(Gdx.files.internal("entities/hostile.pack"), screen);
+        Atlas entities = new Atlas(GameAtlas.ENTITIES, screen);
 
         body = new Body() {
             Vector2 temp = new Vector2();
@@ -92,9 +101,9 @@ public class Bat extends NPC {
             }
         });
 
-        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(hostile.findRegion("bat/head"), screen), 0);
-        BodyPart wing_right = new BodyPart(body, "wing_right", new RegionTexture(hostile.findRegion("bat/wing_right"), screen), 1);
-        BodyPart wing_left = new BodyPart(body, "wing_left", new RegionTexture(hostile.findRegion("bat/wing_left"), screen), -1);
+        BodyPart torso = new BodyPart(body, "torso", new RegionTexture(entities.findRegion("hostile/bat/head"), screen), 0);
+        BodyPart wing_right = new BodyPart(body, "wing_right", new RegionTexture(entities.findRegion("hostile/bat/wing_right"), screen), 1);
+        BodyPart wing_left = new BodyPart(body, "wing_left", new RegionTexture(entities.findRegion("hostile/bat/wing_left"), screen), -1);
     }
 
     public Body getBody() {
@@ -122,7 +131,11 @@ public class Bat extends NPC {
 
     @Override
     public void chooseAction() {
-        setAction(new Stop(this, 1, true));
+        setAction(new ActionList(
+                new FollowEntity(this, getWorld().getCharacter(), new Vector2(0.5f, 2.5f), 5, range),
+                new Wander(this, 2, range),
+                new Stop(this, 1, true)
+        ));
     }
 
 }

@@ -56,7 +56,7 @@ public class CollisionLayer {
             if (x > 0) {
                 int move_x = MathUtils.ceilPositive(position.x + hitbox_x + hitbox_w + x) - 1;
                 for (int tile_x = covered_xmax; tile_x <= move_x; tile_x++) {
-                    if (isSolid(tile_x, tile_x, covered_ymin, covered_ymax)) {
+                    if (isCollision(tile_x, tile_x, covered_ymin, covered_ymax, Collision.SOLID)) {
                         break;
                     } else {
                         float d = Math.min(x, tile_x + 1 - position.x - hitbox_x - hitbox_w);
@@ -67,7 +67,7 @@ public class CollisionLayer {
             } else {
                 int move_x = (int) (position.x + hitbox_x + x);
                 for (int tile_x = covered_xmin; tile_x >= move_x; tile_x--) {
-                    if (isSolid(tile_x, tile_x, covered_ymin, covered_ymax)) {
+                    if (isCollision(tile_x, tile_x, covered_ymin, covered_ymax, Collision.SOLID)) {
                         break;
                     } else {
                         float d = Math.max(x, tile_x - position.x - hitbox_x);
@@ -91,7 +91,7 @@ public class CollisionLayer {
             if (y > 0) {
                 int move_y = MathUtils.ceilPositive(position.y + hitbox_y + hitbox_h + y) - 1;
                 for (int tile_y = covered_ymax; tile_y <= move_y; tile_y++) {
-                    if (isSolid(covered_xmin, covered_xmax, tile_y, tile_y)) {
+                    if (isCollision(covered_xmin, covered_xmax, tile_y, tile_y, Collision.SOLID)) {
                         break;
                     } else {
                         float d = Math.min(y, tile_y + 1 - position.y - hitbox_y - hitbox_h);
@@ -102,14 +102,18 @@ public class CollisionLayer {
             } else {
                 int move_y = (int) (position.y + hitbox_y + y);
                 for (int tile_y = covered_ymin; tile_y >= move_y; tile_y--) {
-                    if (isSolid(covered_xmin, covered_xmax, tile_y, tile_y)) {
+                    if (tile_y == covered_ymin || entity.getCollisionState() == CollisionState.PLATFORM) {
+                        if (isCollision(covered_xmin, covered_xmax, tile_y, tile_y, Collision.SOLID)) {
+                            break;
+                        }
+                    } else if (isCollision(covered_xmin, covered_xmax, tile_y, tile_y, Collision.SOLID, Collision.PLATFORM)) {
                         break;
-                    } else {
-                        float d = Math.max(y, tile_y - position.y - hitbox_y);
-                        position.y += d;
-                        y -= d;
                     }
+                    float d = Math.max(y, tile_y - position.y - hitbox_y);
+                    position.y += d;
+                    y -= d;
                 }
+
             }
 
             if (y != 0f) {
@@ -118,11 +122,13 @@ public class CollisionLayer {
         }
     }
 
-    public boolean isSolid(int xMin, int xMax, int yMin, int yMax) {
+    public boolean isCollision(int xMin, int xMax, int yMin, int yMax, Collision... collisions) {
         for (int x = xMin; x <= xMax; x++) {
             for (int y = yMin; y <= yMax; y++) {
-                if (tiles[x][y] == Collision.SOLID) {
-                    return true;
+                for (Collision collision : collisions) {
+                    if (tiles[x][y] == collision) {
+                        return true;
+                    }
                 }
             }
         }
@@ -146,7 +152,53 @@ public class CollisionLayer {
         int covered_ymin = (int) (position.y + hitbox_y);
         int ground_y = covered_ymin - 1;
 
-        return covered_ymin == (position.y + hitbox_y) && isSolid(covered_xmin, covered_xmax, ground_y, ground_y);
+        if (entity.getCollisionState() == CollisionState.PLATFORM) {
+            return covered_ymin == (position.y + hitbox_y) && isCollision(covered_xmin, covered_xmax, ground_y, ground_y, Collision.SOLID);
+        }
+        return covered_ymin == (position.y + hitbox_y) && isCollision(covered_xmin, covered_xmax, ground_y, ground_y, Collision.SOLID, Collision.PLATFORM);
+    }
+
+    public boolean isOnPlatform(Entity entity) {
+        Vector2 position = entity.getPosition();
+        Rectangle hitbox;
+        if (entity.getHitbox() instanceof RectangleHitbox) {
+            hitbox = ((RectangleHitbox) entity.getHitbox()).getRectangle();
+        } else {
+            hitbox = defaultHitbox;
+        }
+        float hitbox_x = hitbox.getX();
+        float hitbox_y = hitbox.getY();
+        float hitbox_w = hitbox.getWidth();
+
+        int covered_xmin = (int) (position.x + hitbox_x);
+        int covered_xmax = MathUtils.ceilPositive(position.x + hitbox_x + hitbox_w) - 1;
+        int covered_ymin = (int) (position.y + hitbox_y);
+        int ground_y = covered_ymin - 1;
+
+        boolean platform = isCollision(covered_xmin, covered_xmax, ground_y, ground_y, Collision.PLATFORM);
+        boolean solid = isCollision(covered_xmin, covered_xmax, ground_y, ground_y, Collision.SOLID);
+        return covered_ymin == (position.y + hitbox_y) && platform && !solid;
+    }
+
+    public boolean isInPlatform(Entity entity) {
+        Vector2 position = entity.getPosition();
+        Rectangle hitbox;
+        if (entity.getHitbox() instanceof RectangleHitbox) {
+            hitbox = ((RectangleHitbox) entity.getHitbox()).getRectangle();
+        } else {
+            hitbox = defaultHitbox;
+        }
+        float hitbox_x = hitbox.getX();
+        float hitbox_y = hitbox.getY();
+        float hitbox_w = hitbox.getWidth();
+        float hitbox_h = hitbox.getHeight();
+
+        int covered_xmin = (int) (position.x + hitbox_x);
+        int covered_xmax = MathUtils.ceilPositive(position.x + hitbox_x + hitbox_w) - 1;
+        int covered_ymin = (int) (position.y + hitbox_y);
+        int covered_ymax = MathUtils.ceilPositive(position.y + hitbox_y + hitbox_h) - 1;
+
+        return isCollision(covered_xmin, covered_xmax, covered_ymin, covered_ymax, Collision.PLATFORM);
     }
 
 }

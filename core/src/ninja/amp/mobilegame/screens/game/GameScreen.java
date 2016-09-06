@@ -9,10 +9,11 @@ import ninja.amp.mobilegame.engine.background.Background;
 import ninja.amp.mobilegame.engine.background.BackgroundGroup;
 import ninja.amp.mobilegame.engine.background.BackgroundLayer;
 import ninja.amp.mobilegame.engine.background.TileMode;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.SingleTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.graphics.shaders.FadeShader;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
@@ -62,7 +63,7 @@ public class GameScreen extends Screen {
 
         world = new World(game, this);
 
-        Atlas gui = new Atlas(Gdx.files.internal("gui.pack"), this);
+        Atlas gui = new Atlas(GameAtlas.GUI, this);
 
         // TODO: Move control menu to separate class
         Menu controlMenu = new Menu(this);
@@ -120,10 +121,16 @@ public class GameScreen extends Screen {
 
         Input left = new ButtonHoverInput(leftButton);
         Input right = new ButtonHoverInput(rightButton);
-        character = new Character(this, world, new LVector2(1, 1, Limit.VEC2), new XorInput(left, right), new XorInput(right, left), new RisingInput(new ButtonPressInput(upButton)), new ButtonPressInput(controlButton));
+        character = new Character(
+                this,
+                world,
+                new LVector2(2, 29, Limit.VEC2),
+                new XorInput(left, right),
+                new XorInput(right, left),
+                new RisingInput(new ButtonPressInput(upButton)),
+                new ButtonPressInput(controlButton)
+        );
         world.setCharacter(character);
-
-        updateCamera();
     }
 
     private boolean isPaused() { // TODO: Improve this... game states?

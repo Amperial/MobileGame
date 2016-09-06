@@ -2,19 +2,17 @@ package ninja.amp.mobilegame.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import ninja.amp.mobilegame.MobileGame;
 import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
-import ninja.amp.mobilegame.engine.physics.mass.StaticMass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.CubeLimit;
-import ninja.amp.mobilegame.engine.physics.vectors.limits.LengthLimit;
 import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.characters.Character;
-import ninja.amp.mobilegame.objects.characters.npc.State;
-import ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement.Follow;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.range.AreaRange;
 import ninja.amp.mobilegame.objects.characters.npc.hostile.Bat;
 import ninja.amp.mobilegame.screens.Screen;
 import ninja.amp.mobilegame.screens.ScreenCamera;
@@ -102,12 +100,11 @@ public class World {
         bat = new Bat(
                 screen,
                 this,
-                new LVector2(5, 2, Limit.VEC2),
-                new LVector2(0, 0, new LengthLimit<Vector2>(20)),
-                new LVector2(0, 0, Limit.VEC2),
-                new StaticMass(1),
-                State.HOSTILE
+                new LVector2(2, 29, Limit.VEC2),
+                new AreaRange(new Vector2(2, 29), new Rectangle(0, 0, 20, 6))
         );
+
+        /*
         bat.setAction(new Follow(bat, 5) {
             Vector2 target = new Vector2();
 
@@ -117,6 +114,7 @@ public class World {
                 return target.set(character.getPosition()).add(0.5f, 2.5f);
             }
         });
+        */
         //bat.setAction(new WanderInRange(bat, 5, bat.getPosition().cpy(), 2));
         //bat.setAction(new Patrol(bat, 5f, bat.getPosition().cpy(), bat.getPosition().cpy().add(0, 1), bat.getPosition().cpy().add(1, 1), bat.getPosition().cpy().add(1, 0)));
         entities.add(bat);
@@ -213,9 +211,12 @@ public class World {
         game.batch.begin();
 
         // Draw Map
-        map.getBackground().draw(game.batch, 0, 64, 0, 18);
-        map.getMidground().draw(game.batch, 0, 64, 0, 18);
+        map.getBackground().draw(game.batch, 0, 64, 0, 36);
+        map.getMidground().draw(game.batch, 0, 64, 0, 36);
         //map.draw(game.batch, 0, 100, 0, 50);
+
+        bat.getBody().draw(game.batch, delta);
+        //drawHitbox((PolygonHitbox) bat.getHitbox(), (int) ((PolygonHitbox) bat.getHitbox()).getX(), (int)((PolygonHitbox) bat.getHitbox()).getY());
 
         // Draw Character
         //tex.update(delta);
@@ -231,10 +232,8 @@ public class World {
         }
         */
 
-        bat.getBody().draw(game.batch, delta);
-        //drawHitbox((PolygonHitbox) bat.getHitbox(), (int) ((PolygonHitbox) bat.getHitbox()).getX(), (int)((PolygonHitbox) bat.getHitbox()).getY());
 
-        map.getForeground().draw(game.batch, 0, 64, 0, 18);
+        map.getForeground().draw(game.batch, 0, 64, 0, 36);
 
         game.batch.end();
     }
@@ -264,18 +263,17 @@ public class World {
     }
 
     public float getbackgroundy() {
-        //return (map.getHeight() / 2) - camera.position.y;
         return (camera.viewportHeight / 2) - camera.position.y;
     }
 
     public void resize(int width, int height) {
         scale = 16 * width / 300;
 
+        map.setScale(scale);
+
         camera.setToOrtho(false, width, height);
         camera.setLimit(new CubeLimit(new Vector3(camera.viewportWidth / 2, camera.viewportHeight / 2, 0), new Vector3(map.getWidth() - (camera.viewportWidth / 2), map.getHeight() - (camera.viewportHeight / 2), 0)));
         camera.position.set((character.getPosition().x + 0.5f) * scale, (character.getPosition().y + 0.5f + yOffset) * scale, 0);
-
-        map.setScale(scale);
 
         character.getBody().setScale(scale);
 

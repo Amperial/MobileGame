@@ -1,9 +1,10 @@
 package ninja.amp.mobilegame.screens.game;
 
 import com.badlogic.gdx.Gdx;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.gui.Object;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
@@ -22,7 +23,7 @@ public class CharacterMenu extends TabMenu {
     public CharacterMenu(final Screen screen) {
         super(screen);
 
-        Atlas gui = new Atlas(Gdx.files.internal("gui.pack"), screen);
+        Atlas gui = new Atlas(GameAtlas.GUI, screen);
         final Sound sound = new Sound(Gdx.files.internal("sound/button_click.wav"), screen);
 
         // Popup

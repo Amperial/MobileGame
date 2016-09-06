@@ -5,6 +5,7 @@ import ninja.amp.mobilegame.engine.physics.collision.Hitbox;
 import ninja.amp.mobilegame.engine.physics.mass.Mass;
 import ninja.amp.mobilegame.engine.physics.vectors.LVector2;
 import ninja.amp.mobilegame.map.World;
+import ninja.amp.mobilegame.map.collision.CollisionState;
 
 public class Entity {
 
@@ -16,6 +17,7 @@ public class Entity {
 
     private Hitbox hitbox;
     private float immunity;
+    private CollisionState state;
 
     public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass) {
         this.world = world;
@@ -23,6 +25,7 @@ public class Entity {
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+        this.state = CollisionState.NORMAL;
     }
 
     public World getWorld() {
@@ -73,8 +76,24 @@ public class Entity {
         return immunity > 0;
     }
 
+    public CollisionState getCollisionState() {
+        return state;
+    }
+
+    public void setCollisionState(CollisionState state) {
+        this.state = state;
+    }
+
     public boolean isOnGround() {
         return world.getMap().getCollision().isOnGround(this);
+    }
+
+    public boolean isOnPlatform() {
+        return world.getMap().getCollision().isOnPlatform(this);
+    }
+
+    public boolean isInPlatform() {
+        return world.getMap().getCollision().isInPlatform(this);
     }
 
     public boolean attack(float immunity) {

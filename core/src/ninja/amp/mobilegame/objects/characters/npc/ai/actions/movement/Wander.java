@@ -2,32 +2,29 @@ package ninja.amp.mobilegame.objects.characters.npc.ai.actions.movement;
 
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.mobilegame.objects.Entity;
+import ninja.amp.mobilegame.objects.characters.npc.ai.actions.range.Range;
 
-public abstract class Wander extends Follow {
+public class Wander extends Follow {
 
     private Entity entity;
-    private Vector2 anchor;
     private Vector2 target;
 
     private Vector2 temp = new Vector2();
 
-    public Wander(Entity entity, float springConstant, Vector2 anchor) {
-        super(entity, springConstant);
+    public Wander(Entity entity, float springConstant, Range range) {
+        super(entity, springConstant, range);
 
         this.entity = entity;
-        this.anchor = anchor;
-        this.target = anchor.cpy();
+        this.target = range.getAnchor().cpy();
     }
 
-    public Vector2 getAnchor() {
-        return anchor;
+    public Vector2 newTarget() {
+        return getRange().randomInRange(target);
     }
-
-    public abstract Vector2 newTarget();
 
     @Override
     public Vector2 getTarget() {
-        if (entity.getPosition().epsilonEquals(target, 0.001f)) {
+        if (entity.getPosition().epsilonEquals(target, 0.01f) || entity.getVelocity().isZero(0.0001f)) {
             target = newTarget();
         }
         return temp.set(target);

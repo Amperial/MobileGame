@@ -20,7 +20,7 @@ public class Patrol extends Follow {
 
     @Override
     public Vector2 getTarget() {
-        if (entity.getPosition().epsilonEquals(targets[current], 0.001f)) {
+        if (entity.getPosition().epsilonEquals(targets[current], 0.01f)) {
             current = (current + 1) % targets.length;
         }
         return temp.set(targets[current]);

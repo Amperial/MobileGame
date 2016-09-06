@@ -1,11 +1,11 @@
 package ninja.amp.mobilegame.map.tiles;
 
 import com.badlogic.gdx.utils.JsonValue;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 
 public class Surface implements TileContainer {
 
-    private Tile[] tiles = new Tile[16];
+    private Tile[] tiles;
 
     public Surface(Tile... tiles) {
         this.tiles = tiles;

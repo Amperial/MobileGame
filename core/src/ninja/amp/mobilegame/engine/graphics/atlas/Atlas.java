@@ -1,8 +1,9 @@
-package ninja.amp.mobilegame.engine.graphics;
+package ninja.amp.mobilegame.engine.graphics.atlas;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import ninja.amp.mobilegame.engine.graphics.RegionTexture;
+import ninja.amp.mobilegame.engine.graphics.Texture;
 import ninja.amp.mobilegame.engine.resources.Resource;
 import ninja.amp.mobilegame.engine.resources.ResourceHandler;
 
@@ -11,8 +12,8 @@ public class Atlas implements Resource {
     private TextureAtlas atlas;
     private ResourceHandler handler;
 
-    public Atlas(FileHandle file, ResourceHandler handler) {
-        this.atlas = new TextureAtlas(file);
+    public Atlas(GameAtlas atlas, ResourceHandler handler) {
+        this.atlas = new TextureAtlas(atlas.getFile());
         this.handler = handler;
 
         handler.attachResource(this);
@@ -23,7 +24,7 @@ public class Atlas implements Resource {
     }
 
     public Texture createRegionTexture(String name) {
-        return new RegionTexture(findRegion(name), handler);
+        return new RegionTexture(new TextureRegion(findRegion(name)), handler);
     }
 
     @Override

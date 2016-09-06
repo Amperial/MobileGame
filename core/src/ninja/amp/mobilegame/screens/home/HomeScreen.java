@@ -8,10 +8,11 @@ import ninja.amp.mobilegame.engine.background.Background;
 import ninja.amp.mobilegame.engine.background.BackgroundGroup;
 import ninja.amp.mobilegame.engine.background.BackgroundLayer;
 import ninja.amp.mobilegame.engine.background.TileMode;
-import ninja.amp.mobilegame.engine.graphics.Atlas;
+import ninja.amp.mobilegame.engine.graphics.atlas.Atlas;
 import ninja.amp.mobilegame.engine.graphics.RegionTexture;
 import ninja.amp.mobilegame.engine.graphics.SingleTexture;
 import ninja.amp.mobilegame.engine.graphics.Texture;
+import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
 import ninja.amp.mobilegame.engine.graphics.shaders.FadeShader;
 import ninja.amp.mobilegame.engine.gui.Origin;
 import ninja.amp.mobilegame.engine.gui.ScreenAnchor;
@@ -42,7 +43,7 @@ public class HomeScreen extends Screen {
         Background water = new BackgroundLayer(new SingleTexture(Gdx.files.internal("background/Ocean_2.png"), this), new Vector2(10f, 0f), TileMode.REPEAT_X);
         background = new BackgroundGroup(sky, land, water);
 
-        Atlas gui = new Atlas(Gdx.files.internal("gui.pack"), this);
+        Atlas gui = new Atlas(GameAtlas.GUI, this);
 
         Texture small_pressed = new RegionTexture(gui.findRegion("buttons/small_pressed"), this);
         Texture large_pressed = new RegionTexture(gui.findRegion("buttons/large_pressed"), this);

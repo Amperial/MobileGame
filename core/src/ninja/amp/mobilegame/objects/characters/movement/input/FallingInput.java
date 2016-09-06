@@ -3,7 +3,7 @@ package ninja.amp.mobilegame.objects.characters.movement.input;
 public class FallingInput implements Input {
 
     private Input input;
-    private boolean previous = true;
+    private boolean previous = false;
 
     public FallingInput(Input input) {
         this.input = input;
