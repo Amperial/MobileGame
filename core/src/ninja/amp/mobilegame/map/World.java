@@ -13,7 +13,7 @@ import ninja.amp.mobilegame.engine.physics.vectors.limits.Limit;
 import ninja.amp.mobilegame.objects.Entity;
 import ninja.amp.mobilegame.objects.characters.Character;
 import ninja.amp.mobilegame.objects.characters.npc.ai.actions.range.AreaRange;
-import ninja.amp.mobilegame.objects.characters.npc.hostile.Bat;
+import ninja.amp.mobilegame.objects.characters.npc.hostile.bat.Bat;
 import ninja.amp.mobilegame.screens.Screen;
 import ninja.amp.mobilegame.screens.ScreenCamera;
 import ninja.amp.mobilegame.screens.game.GameScreen;

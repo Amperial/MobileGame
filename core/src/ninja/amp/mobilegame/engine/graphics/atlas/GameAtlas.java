@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 public enum GameAtlas {
-    GUI("gui"),
-    TILES("tiles"),
     ENTITIES("entities"),
-    ITEMS("items");
+    GUI("gui"),
+    ITEMS("items"),
+    PARTICLES("particles"),
+    TILES("tiles");
 
     private String fileName;
 

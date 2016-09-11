@@ -69,7 +69,7 @@ public class Character extends Entity {
             public Vector2 position() {
                 vector.set(getPosition()).add(4f / 16f, 9f / 16f);
                 if (pose.getMove() == Move.RUNNING) {
-                    vector.add(0, Math.abs(MathUtils.sin((body.getPoseTime() * 2.5f + 0.25f) * MathUtils.PI)) * 0.0625f);
+                    vector.add(0, Math.abs(MathUtils.sin((body.getPoseTime() * 2.5f + 0.25f) * MathUtils.PI)) * 0.0625f - 0.025f);
                 }
                 return vector;
             }

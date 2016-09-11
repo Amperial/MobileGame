@@ -49,3 +49,6 @@ later:
 persistence with google play
 achievements
 in-app purchases store
+
+-npcs have white eyes when peaceful/neutral and red eyes when hostile
+    -have a certain enemy that triggers in groups at the same time

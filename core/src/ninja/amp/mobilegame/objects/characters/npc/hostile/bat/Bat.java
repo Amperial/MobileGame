@@ -1,4 +1,4 @@
-package ninja.amp.mobilegame.objects.characters.npc.hostile;
+package ninja.amp.mobilegame.objects.characters.npc.hostile.bat;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
