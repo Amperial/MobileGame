@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import ninja.amp.mobilegame.MobileGame;
+import ninja.amp.game.MobileGame;
 
 public class AndroidLauncher extends AndroidApplication {
 

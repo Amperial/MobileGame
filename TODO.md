@@ -52,3 +52,12 @@ in-app purchases store
 
 -npcs have white eyes when peaceful/neutral and red eyes when hostile
     -have a certain enemy that triggers in groups at the same time
+
+-torch fire particles can move with the wind if entities move past them
+    -torches can be blown out by arrows?
+
+-screen shake
+-chandelier fire, fireplace fire
+-rig skeleton body
+-create basic slime enemy with full AI
+-finish character attack animations

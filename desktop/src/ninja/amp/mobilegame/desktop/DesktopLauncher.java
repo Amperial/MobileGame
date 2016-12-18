@@ -3,8 +3,8 @@ package ninja.amp.mobilegame.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import ninja.amp.mobilegame.MobileGame;
-import ninja.amp.mobilegame.engine.graphics.atlas.GameAtlas;
+import ninja.amp.game.MobileGame;
+import ninja.amp.engine.graphics.textures.atlas.GameAtlas;
 
 public class DesktopLauncher {
 
