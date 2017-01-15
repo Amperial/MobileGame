@@ -4,19 +4,25 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ninja.amp.engine.graphics.gui.screens.Screen;
 import ninja.amp.engine.persistence.Options;
+import ninja.amp.engine.persistence.Persistence;
 import ninja.amp.engine.resources.ResourceHandler;
 import ninja.amp.engine.resources.audio.MusicManager;
 
 public class Game extends com.badlogic.gdx.Game {
 
-    public Options options;
+    public Persistence persistence;
     public MusicManager music;
-    public Batch batch;
     public ResourceHandler resources;
+
+    public Options options;
+
+    public Batch batch;
 
     @Override
     public void create() {
+        persistence = new Persistence();
         options = new Options();
+        persistence.attachData(options);
         music = new MusicManager(options);
         batch = new SpriteBatch();
         resources = new ResourceHandler();
@@ -31,12 +37,12 @@ public class Game extends com.badlogic.gdx.Game {
 
     @Override
     public void pause() {
-        options.save();
+        persistence.save();
     }
 
     @Override
     public void resume() {
-        options.load();
+        persistence.load();
     }
 
     @Override
@@ -45,6 +51,7 @@ public class Game extends com.badlogic.gdx.Game {
         batch.dispose();
         music = null;
         options = null;
+        persistence = null;
     }
 
 }

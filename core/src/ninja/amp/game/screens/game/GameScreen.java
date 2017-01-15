@@ -15,7 +15,8 @@ import ninja.amp.engine.physics.vectors.LVector2;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 import ninja.amp.engine.resources.audio.Music;
 import ninja.amp.game.MobileGame;
-import ninja.amp.game.objects.characters.GameCharacter;
+import ninja.amp.game.objects.entities.character.GameCharacter;
+import ninja.amp.game.persistence.CharacterStats;
 import ninja.amp.game.screens.home.SettingsMenu;
 
 public class GameScreen extends Screen {
@@ -33,19 +34,13 @@ public class GameScreen extends Screen {
 
         log = new FPSLogger();
 
-        Atlas gui = new Atlas(GameAtlas.GUI, this);
-
-        final ControlMenu controlMenu = new ControlMenu(this, gui);
-        Menu pauseMenu = new PauseMenu(game, this, gui);
-
-        addMenu("control", controlMenu);
-        addMenu("pause", pauseMenu);
-        addMenu("settings", new SettingsMenu(game, this, pauseMenu));
-        addMenu("character", new CharacterMenu(game, this)); // TEMP
-        setActiveMenu(controlMenu);
+        CharacterStats stats = new CharacterStats();
+        game.persistence.attachData(stats);
 
         world = new World(game, this, mapLoader);
 
+        Atlas gui = new Atlas(GameAtlas.GUI, this);
+        final ControlMenu controlMenu = new ControlMenu(this, gui);
         Character character = new GameCharacter(
                 this,
                 world,
@@ -53,13 +48,20 @@ public class GameScreen extends Screen {
                 controlMenu.getLeftInput(),
                 controlMenu.getRightInput(),
                 controlMenu.getJumpInput(),
-                controlMenu.getControlInput()
+                controlMenu.getControlInput(),
+                stats.getHealth(),
+                stats.getProtection(),
+                stats.getStrength()
         );
-        character.initializeBody();
-        character.initializeAttacker();
-        character.initializeMove();
-        character.initializePose();
+        character.initialize();
         world.setCharacter(character);
+
+        Menu pauseMenu = new PauseMenu(game, this, gui);
+        addMenu("control", controlMenu);
+        addMenu("pause", pauseMenu);
+        addMenu("settings", new SettingsMenu(game, this, pauseMenu));
+        addMenu("character", new CharacterMenu(game, this, world, stats)); // TEMP
+        setActiveMenu(controlMenu);
 
         game.music.setPlaying(new Music(Gdx.files.internal("music/sewers.mp3"), game.music, game.resources));
     }

@@ -1,4 +1,11 @@
 package ninja.amp.engine.objects.entities.stats;
 
-public abstract class Stat {
+public interface Stat {
+
+    StatType getType();
+
+    float getBase();
+
+    float calculate();
+
 }

@@ -40,9 +40,17 @@ public class ControlMenu extends Menu {
                 screen.transitionMenu(screen.getMenu("pause"), 0.2f, 0.3f);
             }
         };
+
+        Button characterButton = new PressableButton(new RegionTexture(gui.findRegion("controls/control"), screen), new RegionTexture(gui.findRegion("controls/control_pressed"), screen), new ScreenAnchor(0, 1), Origin.TOP_LEFT, new StaticOffset(1, -1)) {
+            @Override
+            public void click() {
+                screen.openPopup(screen.getMenu("character"));
+            }
+        };
+
         Texture stat_health = new RegionTexture(gui.findRegion("status_bar"), screen);
         Texture stat_health_fill = new RegionTexture(gui.findRegion("status_fill_red"), screen);
-        Object health = new StretchStatusBar(stat_health, stat_health_fill, new ScreenAnchor(0, 1), Origin.TOP_LEFT, new StaticOffset(5, -1)) {
+        Object health = new StretchStatusBar(stat_health, stat_health_fill, characterButton, Origin.TOP_LEFT, new StaticOffset(characterButton.getWidth() + 1, -2)) {
             float health = 0;
             float increment = 1.7f;
             int direction = 1;
@@ -63,7 +71,7 @@ public class ControlMenu extends Menu {
         };
         Texture stat_stamina = new RegionTexture(gui.findRegion("status_bar"), screen);
         Texture stat_stamina_fill = new RegionTexture(gui.findRegion("status_fill_green"), screen);
-        Object stamina = new StretchStatusBar(stat_stamina, stat_stamina_fill, health, Origin.TOP_LEFT, new StaticOffset(0, -health.getHeight())) {
+        Object stamina = new StretchStatusBar(stat_stamina, stat_stamina_fill, health, Origin.TOP_LEFT, new StaticOffset(0, -health.getHeight() + 4)) {
             float stamina = 0;
             float increment = 5f;
             int direction = 1;
@@ -83,7 +91,7 @@ public class ControlMenu extends Menu {
             }
         };
 
-        addButtons(leftButton, rightButton, upButton, controlButton, pauseButton);
+        addButtons(characterButton, leftButton, rightButton, upButton, controlButton, pauseButton);
         addObjects(health, stamina);
 
         Input left = new ButtonHoverInput(leftButton);

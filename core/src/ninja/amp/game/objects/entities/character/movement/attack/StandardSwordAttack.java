@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters.movement.attack;
+package ninja.amp.game.objects.entities.character.movement.attack;
 
 import ninja.amp.engine.objects.body.Body;
 import ninja.amp.engine.objects.body.pose.Pose;

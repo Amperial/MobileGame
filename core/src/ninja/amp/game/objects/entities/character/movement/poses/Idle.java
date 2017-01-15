@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters.movement.poses;
+package ninja.amp.game.objects.entities.character.movement.poses;
 
 import com.badlogic.gdx.math.MathUtils;
 import ninja.amp.engine.objects.body.Body;

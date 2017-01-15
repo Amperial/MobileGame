@@ -13,6 +13,7 @@ import ninja.amp.engine.physics.vectors.limits.CubeLimit;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class World {
@@ -63,6 +64,15 @@ public class World {
             entity.update(delta);
         }
 
+        // Remove dead entities
+        // TODO: Death animations?
+        Iterator<Entity> entityIterator = entities.iterator();
+        while (entityIterator.hasNext()) {
+            if (entityIterator.next().isDead()) {
+                entityIterator.remove();
+            }
+        }
+
         // Update particles
         particles.update(delta);
 
@@ -93,7 +103,9 @@ public class World {
 
         // Draw Entities
         for (Entity entity : entities) {
-            // TODO: Draw Entity
+            if (entity.getBody() != null) {
+                entity.getBody().draw(game.batch, delta);
+            }
         }
 
         // Draw Map Foreground
@@ -137,7 +149,9 @@ public class World {
         character.getBody().setScale(scale);
 
         for (Entity entity : entities) {
-            // TODO: Scale Entity
+            if (entity.getBody() != null) {
+                entity.getBody().setScale(scale);
+            }
         }
 
         particles.setScale(scale);

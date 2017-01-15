@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters.npc.hostile.skeleton;
+package ninja.amp.game.objects.entities.npc.hostile.skeleton;
 
 import ninja.amp.engine.objects.body.Body;
 import ninja.amp.engine.objects.body.pose.Pose;

@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters.npc.hostile.bat;
+package ninja.amp.game.objects.entities.npc.hostile.bat;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,6 +22,8 @@ import ninja.amp.engine.objects.entities.npc.ai.actions.movement.FollowEntity;
 import ninja.amp.engine.objects.entities.npc.ai.actions.movement.Stop;
 import ninja.amp.engine.objects.entities.npc.ai.actions.movement.Wander;
 import ninja.amp.engine.objects.entities.npc.ai.actions.range.Range;
+import ninja.amp.engine.objects.entities.stats.BaseStat;
+import ninja.amp.engine.objects.entities.stats.BaseType;
 import ninja.amp.engine.physics.collision.EntityHitbox;
 import ninja.amp.engine.physics.mass.StaticMass;
 import ninja.amp.engine.physics.vectors.LVector2;
@@ -35,7 +37,17 @@ public class Bat extends NPC {
     private Action action;
 
     public Bat(Screen screen, World world, LVector2 position, Range range) {
-        super(world, position, new LVector2(0, 0, new LengthLimit<Vector2>(10)), new LVector2(Limit.VEC2), new StaticMass(1), State.HOSTILE);
+        super(
+                world,
+                position,
+                new LVector2(0, 0, new LengthLimit<Vector2>(10)),
+                new LVector2(Limit.VEC2),
+                new StaticMass(1),
+                State.HOSTILE,
+                new BaseStat(BaseType.HEALTH, 1),
+                new BaseStat(BaseType.PROTECTION, 0),
+                new BaseStat(BaseType.STRENGTH, 1)
+        );
 
         this.range = range;
 

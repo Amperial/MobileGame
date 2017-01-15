@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters;
+package ninja.amp.game.objects.entities.character;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,6 +22,8 @@ import ninja.amp.engine.objects.entities.character.movement.MoveController;
 import ninja.amp.engine.objects.entities.character.movement.PoseController;
 import ninja.amp.engine.objects.entities.character.movement.attack.Attack;
 import ninja.amp.engine.objects.entities.character.movement.attack.AttackController;
+import ninja.amp.engine.objects.entities.stats.BaseType;
+import ninja.amp.engine.objects.entities.stats.EntityStat;
 import ninja.amp.engine.physics.collision.EntityHitbox;
 import ninja.amp.engine.physics.forces.Force;
 import ninja.amp.engine.physics.forces.FrictionForce;
@@ -33,10 +35,10 @@ import ninja.amp.engine.physics.mass.StaticMass;
 import ninja.amp.engine.physics.vectors.LVector2;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 import ninja.amp.engine.physics.vectors.limits.RectangleLimit;
-import ninja.amp.game.objects.characters.movement.attack.StandardSwordAttack;
-import ninja.amp.game.objects.characters.movement.poses.Idle;
-import ninja.amp.game.objects.characters.movement.poses.Jumping;
-import ninja.amp.game.objects.characters.movement.poses.Running;
+import ninja.amp.game.objects.entities.character.movement.attack.StandardSwordAttack;
+import ninja.amp.game.objects.entities.character.movement.poses.Idle;
+import ninja.amp.game.objects.entities.character.movement.poses.Jumping;
+import ninja.amp.game.objects.entities.character.movement.poses.Running;
 import ninja.amp.game.objects.items.weapons.WeaponPart;
 import ninja.amp.game.objects.items.weapons.swords.Longsword;
 
@@ -51,13 +53,16 @@ public class GameCharacter extends Character {
 
     private boolean flip = false;
 
-    public GameCharacter(Screen screen, World world, LVector2 position, Input left, Input right, Input jump, Input control) {
+    public GameCharacter(Screen screen, World world, LVector2 position, Input left, Input right, Input jump, Input control, int health, int protection, int strength) {
         super(
                 world,
                 position,
                 new LVector2(new RectangleLimit(new Rectangle(-6, -20, 12, 40))),
                 new LVector2(Limit.VEC2),
-                new StaticMass(1)
+                new StaticMass(1),
+                new EntityStat(BaseType.HEALTH, 3, 0.5f, 10, health),
+                new EntityStat(BaseType.PROTECTION, 0, 1, 10, protection),
+                new EntityStat(BaseType.STRENGTH, 0, 1, 10, strength)
         );
 
         this.screen = screen;

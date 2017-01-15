@@ -3,9 +3,18 @@ package ninja.amp.engine.objects.entities;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.engine.map.World;
 import ninja.amp.engine.map.collision.CollisionState;
+import ninja.amp.engine.objects.body.Body;
+import ninja.amp.engine.objects.entities.effects.Effect;
+import ninja.amp.engine.objects.entities.stats.EntityStat;
+import ninja.amp.engine.objects.entities.stats.Stat;
+import ninja.amp.engine.objects.items.Item;
 import ninja.amp.engine.physics.collision.Hitbox;
 import ninja.amp.engine.physics.mass.Mass;
 import ninja.amp.engine.physics.vectors.LVector2;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Entity {
 
@@ -15,17 +24,54 @@ public class Entity {
     private LVector2 acceleration;
     private Mass mass;
 
+    protected Body body;
     private Hitbox hitbox;
     private float immunity;
     private CollisionState state;
 
-    public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass) {
+    private Stat health;
+    private Stat protection;
+    private Stat strength;
+
+    // TODO: Use equipment class for items
+    private Set<Item> items;
+    private Set<Effect> effects;
+
+    private boolean dead = false;
+
+    public Entity(World world, LVector2 position, LVector2 velocity, LVector2 acceleration, Mass mass, Stat health, Stat protection, Stat strength) {
         this.world = world;
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+
+        this.health = health;
+        this.protection = protection;
+        this.strength = strength;
+        if (health instanceof EntityStat) {
+            ((EntityStat) health).setEntity(this);
+        }
+        if (protection instanceof EntityStat) {
+            ((EntityStat) protection).setEntity(this);
+        }
+        if (strength instanceof EntityStat) {
+            ((EntityStat) strength).setEntity(this);
+        }
+
         this.state = CollisionState.NORMAL;
+
+        this.items = new HashSet<Item>();
+        this.effects = new HashSet<Effect>();
+    }
+
+    public void initialize() {
+        initializeBody();
+        // Override to initialize additional code
+    }
+
+    public void initializeBody() {
+        // Override to initialize entity body
     }
 
     public World getWorld() {
@@ -64,6 +110,10 @@ public class Entity {
         this.mass = mass;
     }
 
+    public Body getBody() {
+        return body;
+    }
+
     public Hitbox getHitbox() {
         return hitbox;
     }
@@ -96,7 +146,44 @@ public class Entity {
         return world.getMap().getCollision().isInPlatform(this);
     }
 
+    public Stat getHealth() {
+        return health;
+    }
+
+    public Stat getProtection() {
+        return protection;
+    }
+
+    public Stat getStrength() {
+        return strength;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public Set<Effect> getEffects() {
+        return effects;
+    }
+
+    public void clearEffects() {
+        effects.clear();
+    }
+
+    public void addEffect(Effect effect) {
+        effects.add(effect);
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void die() {
+        dead = true;
+    }
+
     public boolean attack(float immunity) {
+        // TODO
         if (isImmune()) {
             return false;
         } else {
@@ -110,6 +197,15 @@ public class Entity {
     }
 
     public void update(float delta) {
+        Iterator<Effect> effectIterator = effects.iterator();
+        while (effectIterator.hasNext()) {
+            Effect effect = effectIterator.next();
+            effect.update(delta);
+            if (!effect.active()) {
+                effectIterator.remove();
+            }
+        }
+
         acceleration.scl(1 / mass.getMass());
         acceleration.limit();
 

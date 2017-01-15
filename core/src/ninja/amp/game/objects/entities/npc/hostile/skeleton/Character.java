@@ -1,4 +1,4 @@
-package ninja.amp.game.objects.characters.npc.hostile.skeleton;
+package ninja.amp.game.objects.entities.npc.hostile.skeleton;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -20,6 +20,7 @@ import ninja.amp.engine.objects.entities.character.movement.MoveController;
 import ninja.amp.engine.objects.entities.character.movement.PoseController;
 import ninja.amp.engine.objects.entities.character.movement.attack.Attack;
 import ninja.amp.engine.objects.entities.character.movement.attack.AttackController;
+import ninja.amp.engine.objects.entities.stats.Stat;
 import ninja.amp.engine.physics.collision.EntityHitbox;
 import ninja.amp.engine.physics.forces.Force;
 import ninja.amp.engine.physics.forces.FrictionForce;
@@ -31,9 +32,9 @@ import ninja.amp.engine.physics.mass.StaticMass;
 import ninja.amp.engine.physics.vectors.LVector2;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 import ninja.amp.engine.physics.vectors.limits.RectangleLimit;
-import ninja.amp.game.objects.characters.movement.attack.StandardSwordAttack;
-import ninja.amp.game.objects.characters.movement.poses.Idle;
-import ninja.amp.game.objects.characters.movement.poses.Jumping;
+import ninja.amp.game.objects.entities.character.movement.attack.StandardSwordAttack;
+import ninja.amp.game.objects.entities.character.movement.poses.Idle;
+import ninja.amp.game.objects.entities.character.movement.poses.Jumping;
 import ninja.amp.game.objects.items.weapons.WeaponPart;
 import ninja.amp.game.objects.items.weapons.swords.Longsword;
 import ninja.amp.game.screens.game.GameScreen;
@@ -46,13 +47,16 @@ public class Character extends Entity {
     private PoseController pose;
     private boolean flip = false;
 
-    public Character(GameScreen screen, World world, LVector2 position, final Input left, final Input right, final Input jump, final Input control) {
+    public Character(GameScreen screen, World world, LVector2 position, final Input left, final Input right, final Input jump, final Input control, Stat health, Stat protection, Stat strength) {
         super(
                 world,
                 position,
                 new LVector2(new RectangleLimit(new Rectangle(-6, -20, 12, 40))),
                 new LVector2(Limit.VEC2),
-                new StaticMass(1)
+                new StaticMass(1),
+                health,
+                protection,
+                strength
         );
 
         setHitbox(new EntityHitbox(this, new Rectangle(3f / 16f, 0, 10f / 16f, 30f / 16f)));
@@ -203,7 +207,7 @@ public class Character extends Entity {
 
         pose = new PoseController(body) {
             private Pose idle = new Idle(body);
-            private Pose running = new ninja.amp.game.objects.characters.movement.poses.Running(body);
+            private Pose running = new ninja.amp.game.objects.entities.character.movement.poses.Running(body);
             private Pose jumping = new Jumping(body);
             private float running_min = 1f;
 

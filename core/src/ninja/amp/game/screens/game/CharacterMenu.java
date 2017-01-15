@@ -16,12 +16,15 @@ import ninja.amp.engine.graphics.textures.RegionTexture;
 import ninja.amp.engine.graphics.textures.Texture;
 import ninja.amp.engine.graphics.textures.atlas.Atlas;
 import ninja.amp.engine.graphics.textures.atlas.GameAtlas;
+import ninja.amp.engine.map.World;
+import ninja.amp.engine.objects.entities.stats.ScalingStat;
 import ninja.amp.engine.resources.audio.Sound;
 import ninja.amp.game.MobileGame;
+import ninja.amp.game.persistence.CharacterStats;
 
 public class CharacterMenu extends TabMenu {
 
-    public CharacterMenu(final MobileGame game, final Screen screen) {
+    public CharacterMenu(final MobileGame game, final Screen screen, final World world, final CharacterStats characterStats) {
         super(screen);
 
         Atlas gui = new Atlas(GameAtlas.GUI, screen);
@@ -89,8 +92,8 @@ public class CharacterMenu extends TabMenu {
         Object health = new TileStatusBar(stat_health, stat_health_fill, bar, Origin.TOP_RIGHT, new StaticOffset(-23, -16)) {
             @Override
             public float fillPercent() {
-                int health = 4; // TODO: get this from character stats
-                return health / 10f;
+                ScalingStat health = (ScalingStat) world.getCharacter().getHealth();
+                return health.getLevel() / (float)health.getMaxLevel();
             }
         };
         Texture stat_protection = new RegionTexture(gui.findRegion("menus/character/stat_protection"), screen);
@@ -98,8 +101,8 @@ public class CharacterMenu extends TabMenu {
         Object protection = new TileStatusBar(stat_protection, stat_protection_fill, health, Origin.TOP_RIGHT, new StaticOffset(0, -16)) {
             @Override
             public float fillPercent() {
-                int protection = 2; // TODO: get this from character stats
-                return protection / 10f;
+                ScalingStat protection = (ScalingStat) world.getCharacter().getProtection();
+                return protection.getLevel() / (float)protection.getMaxLevel();
             }
         };
         Texture stat_strength = new RegionTexture(gui.findRegion("menus/character/stat_strength"), screen);
@@ -107,29 +110,47 @@ public class CharacterMenu extends TabMenu {
         Object strength = new TileStatusBar(stat_strength, stat_strength_fill, protection, Origin.TOP_RIGHT, new StaticOffset(0, -16)) {
             @Override
             public float fillPercent() {
-                int strength = 10; // TODO: get this from character stats
-                return strength / 10f;
+                ScalingStat strength = (ScalingStat) world.getCharacter().getStrength();
+                return strength.getLevel() / (float)strength.getMaxLevel();
             }
         };
         Texture stat_increase = new RegionTexture(gui.findRegion("menus/character/stat_increase"), screen);
         Button health_increase = new Button(stat_increase, health, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
-                // TODO: Increase health stat
+                // TEMP CODE TO RESET STAT LEVEL
+                if (((ScalingStat) world.getCharacter().getHealth()).getLevel() == ((ScalingStat) world.getCharacter().getHealth()).getMaxLevel()) {
+                    ((ScalingStat) world.getCharacter().getHealth()).setLevel(0);
+                }
+                // TODO: Make leveling up cost x currency
+                ((ScalingStat) world.getCharacter().getHealth()).levelUp();
+                characterStats.setHealth(((ScalingStat) world.getCharacter().getHealth()).getLevel());
                 sound.play();
             }
         };
         Button protection_increase = new Button(stat_increase, protection, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
-                // TODO: Increase protection stat
+                // TEMP CODE TO RESET STAT LEVEL
+                if (((ScalingStat) world.getCharacter().getProtection()).getLevel() == ((ScalingStat) world.getCharacter().getProtection()).getMaxLevel()) {
+                    ((ScalingStat) world.getCharacter().getProtection()).setLevel(0);
+                }
+                // TODO: Make leveling up cost x currency
+                ((ScalingStat) world.getCharacter().getProtection()).levelUp();
+                characterStats.setProtection(((ScalingStat) world.getCharacter().getProtection()).getLevel());
                 sound.play();
             }
         };
         Button strength_increase = new Button(stat_increase, strength, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
-                // TODO: Increase strength stat
+                // TEMP CODE TO RESET STAT LEVEL
+                if (((ScalingStat) world.getCharacter().getStrength()).getLevel() == ((ScalingStat) world.getCharacter().getStrength()).getMaxLevel()) {
+                    ((ScalingStat) world.getCharacter().getStrength()).setLevel(0);
+                }
+                // TODO: Make leveling up cost x currency
+                ((ScalingStat) world.getCharacter().getStrength()).levelUp();
+                characterStats.setStrength(((ScalingStat) world.getCharacter().getStrength()).getLevel());
                 sound.play();
             }
         };
