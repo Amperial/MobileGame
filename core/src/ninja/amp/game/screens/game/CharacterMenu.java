@@ -92,7 +92,7 @@ public class CharacterMenu extends TabMenu {
             @Override
             public float fillPercent() {
                 ScalingStat health = (ScalingStat) world.getCharacter().getHealth();
-                return health.getLevel() / (float)health.getMaxLevel();
+                return health.getLevel() / (float) health.getMaxLevel();
             }
         };
         Texture stat_protection = new RegionTexture(gui.findRegion("menus/character/stat_protection"), screen);
@@ -101,7 +101,7 @@ public class CharacterMenu extends TabMenu {
             @Override
             public float fillPercent() {
                 ScalingStat protection = (ScalingStat) world.getCharacter().getProtection();
-                return protection.getLevel() / (float)protection.getMaxLevel();
+                return protection.getLevel() / (float) protection.getMaxLevel();
             }
         };
         Texture stat_strength = new RegionTexture(gui.findRegion("menus/character/stat_strength"), screen);
@@ -110,7 +110,7 @@ public class CharacterMenu extends TabMenu {
             @Override
             public float fillPercent() {
                 ScalingStat strength = (ScalingStat) world.getCharacter().getStrength();
-                return strength.getLevel() / (float)strength.getMaxLevel();
+                return strength.getLevel() / (float) strength.getMaxLevel();
             }
         };
         Texture stat_increase = new RegionTexture(gui.findRegion("menus/character/stat_increase"), screen);
