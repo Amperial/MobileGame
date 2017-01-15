@@ -2,7 +2,7 @@ package ninja.amp.engine.objects.entities.npc.ai.actions;
 
 public abstract class TimedAction implements Action {
 
-    private float remaining;
+    private float remaining = -1;
 
     public abstract float getTime();
 
@@ -30,7 +30,7 @@ public abstract class TimedAction implements Action {
 
     @Override
     public void cancel() {
-        remaining = 0;
+        remaining = -1;
     }
 
     @Override

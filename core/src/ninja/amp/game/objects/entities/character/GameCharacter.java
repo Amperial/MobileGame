@@ -25,6 +25,8 @@ import ninja.amp.engine.objects.entities.character.movement.attack.AttackControl
 import ninja.amp.engine.objects.entities.stats.BaseType;
 import ninja.amp.engine.objects.entities.stats.EntityStat;
 import ninja.amp.engine.physics.collision.EntityHitbox;
+import ninja.amp.engine.physics.collision.Hitbox;
+import ninja.amp.engine.physics.collision.RectangleHitbox;
 import ninja.amp.engine.physics.forces.Force;
 import ninja.amp.engine.physics.forces.FrictionForce;
 import ninja.amp.engine.physics.forces.Impulse;
@@ -50,6 +52,8 @@ public class GameCharacter extends Character {
     private Input right;
     private Input jump;
     private Input control;
+
+    private BodyPart weapon_right;
 
     private boolean flip = false;
 
@@ -130,7 +134,7 @@ public class GameCharacter extends Character {
         BodyPart leg_left_lower = new BodyPart(body, "leg_left_lower", new RegionTexture(entities.findRegion("character/leg_lower"), screen), -1, 3, 30);
         BodyPart leg_right_upper = new BodyPart(body, "leg_right_upper", new RegionTexture(entities.findRegion("character/leg_upper"), screen), 3, -1, 40);
         BodyPart leg_right_lower = new BodyPart(body, "leg_right_lower", new RegionTexture(entities.findRegion("character/leg_lower"), screen), 2, 0, 30);
-        BodyPart weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f / 16f, 0);
+        weapon_right = new WeaponPart(body, arm_right_lower, new Longsword("Longsword", new StaticMass(1), screen), "weapon_right", 4, -2, 0, 4f / 16f, 0);
         //BodyPart weapon_left = new WeaponPart(body, arm_left_lower, new Hammer("Hammer", new StaticMass(1), screen), "character/weapon_left", -3, 5, 0, 4f/16f, 0);
     }
 
@@ -145,8 +149,64 @@ public class GameCharacter extends Character {
             }
         };
 
+        // TODO: Get this hitbox from weapon class
+        final Hitbox sword_hitbox = new RectangleHitbox(new Rectangle(0, 2f/24f, 7f/24f, 32f/24f)) {
+            @Override
+            public float getX() {
+                return weapon_right.getPosition().getX() - weapon_right.getPosition().getOriginX();
+            }
+            @Override
+            public float getY() {
+                return weapon_right.getPosition().getY() - weapon_right.getPosition().getOriginY();
+            }
+            @Override
+            public float getOriginX() {
+                return weapon_right.getPosition().getOriginX();
+            }
+            @Override
+            public float getOriginY() {
+                return weapon_right.getPosition().getOriginY();
+            }
+            @Override
+            public float getRotation() {
+                return weapon_right.getPosition().getRotation();
+            }
+        };
+        final Hitbox sword_hitbox_flip = new RectangleHitbox(new Rectangle(0, 2f/24f, -7f/24f, 32f/24f)) {
+            @Override
+            public float getX() {
+                return weapon_right.getPosition().getFlippedX() + weapon_right.getPosition().getOriginX();
+            }
+            @Override
+            public float getY() {
+                return weapon_right.getPosition().getY() - weapon_right.getPosition().getOriginY();
+            }
+            @Override
+            public float getOriginX() {
+                return -weapon_right.getPosition().getOriginX();
+            }
+            @Override
+            public float getOriginY() {
+                return weapon_right.getPosition().getOriginY();
+            }
+            @Override
+            public float getRotation() {
+                return -weapon_right.getPosition().getRotation();
+            }
+        };
+
         Attack standard = new Attack(new StandardSwordAttack(body), Attack.Type.STANDARD, 0.5f, 0.15f, 0.15f);
         attacker = new AttackController(standard) {
+            @Override
+            public boolean hasAttackHitbox() {
+                return getAttack().getState() == Attack.State.ATTACK && getAttack().getPoseTime() > 0.2f;
+            }
+
+            @Override
+            public Hitbox getAttackHitbox() {
+                return flip ? sword_hitbox_flip : sword_hitbox;
+            }
+
             @Override
             public boolean isPressed() {
                 return attack.getInput();
@@ -215,7 +275,7 @@ public class GameCharacter extends Character {
                         has_jumpchance = false;
                     }
                 }
-                entity.applyForce(SimpleForce.GRAVITY.calculate(entity, delta));
+                entity.applyForce(SimpleForce.GRAVITY.calculate(entity, delta).scl(getMass()));
                 if (jump.getInput() && (onGround || airjump)) {
                     entity.applyForce(move_jump.calculate(entity, delta));
                     if (!onGround && !has_jumpchance) {

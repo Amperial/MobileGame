@@ -33,6 +33,10 @@ public abstract class Character extends Entity {
 
     public abstract void initializePose();
 
+    public AttackController getAttacker() {
+        return attacker;
+    }
+
     public MoveController getMove() {
         return move;
     }

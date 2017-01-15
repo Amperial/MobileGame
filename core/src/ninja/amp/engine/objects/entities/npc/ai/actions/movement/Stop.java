@@ -9,9 +9,11 @@ public class Stop implements Action {
 
     private Entity entity;
     private Force force;
+    private boolean yAxis;
 
     public Stop(Entity entity, final float acceleration, boolean yAxis) {
         this.entity = entity;
+        this.yAxis = yAxis;
 
         if (yAxis) {
             force = new Force() {
@@ -36,7 +38,7 @@ public class Stop implements Action {
 
     @Override
     public boolean canPerform() {
-        return true;
+        return yAxis || entity.isOnGround();
     }
 
     @Override
@@ -46,6 +48,12 @@ public class Stop implements Action {
     @Override
     public void perform(float deltaTime) {
         entity.applyForce(force.calculate(entity, deltaTime));
+        if (Math.abs(entity.getVelocity().x) < 0.01f) {
+            entity.getVelocity().x = 0;
+        }
+        if (yAxis && Math.abs(entity.getVelocity().y) < 0.01f) {
+            entity.getVelocity().y = 0;
+        }
     }
 
     @Override
@@ -54,7 +62,7 @@ public class Stop implements Action {
 
     @Override
     public boolean isComplete() {
-        return false;
+        return yAxis ? entity.getVelocity().isZero() : entity.getVelocity().x == 0;
     }
 
 }

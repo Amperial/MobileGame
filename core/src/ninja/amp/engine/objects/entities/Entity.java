@@ -199,7 +199,7 @@ public class Entity {
         } else {
             damage -= protection.calculate();
             currentHealth -= damage;
-            if (currentHealth < 0) {
+            if (currentHealth <= 0) {
                 currentHealth = 0;
                 die();
             } else {

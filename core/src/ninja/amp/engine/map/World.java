@@ -9,6 +9,8 @@ import ninja.amp.engine.graphics.gui.screens.ScreenCamera;
 import ninja.amp.engine.objects.entities.Entity;
 import ninja.amp.engine.objects.entities.character.Character;
 import ninja.amp.engine.particles.ParticleSystem;
+import ninja.amp.engine.physics.collision.Hitbox;
+import ninja.amp.engine.physics.forces.Impulse;
 import ninja.amp.engine.physics.vectors.limits.CubeLimit;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 
@@ -30,6 +32,7 @@ public class World {
 
     private Character character;
     private Set<Entity> entities = new HashSet<Entity>();
+    private Set<Entity> spawningEntities = new HashSet<Entity>();
 
     private ParticleSystem particles;
 
@@ -58,6 +61,16 @@ public class World {
             delta = 0.05f;
         }
 
+        // Add spawning entities
+        for (Entity entity : spawningEntities) {
+            entity.initialize();
+            if (entity.getBody() != null) {
+                entity.getBody().setScale(scale);
+            }
+            entities.add(entity);
+        }
+        spawningEntities.clear();
+
         // Update character and entities
         character.update(delta);
         for (Entity entity : entities) {
@@ -75,6 +88,23 @@ public class World {
 
         // Update particles
         particles.update(delta);
+
+        // Update damaging hitboxes
+        if (character.getAttacker().isAttacking() && character.getAttacker().hasAttackHitbox()) {
+            float strength = character.getStrength().calculate();
+            Hitbox attack = character.getAttacker().getAttackHitbox();
+            for (Entity entity : entities) {
+                if (attack.intersects(entity.getHitbox())) {
+                    float protection = entity.getProtection().calculate();
+                    float damage = (strength - protection);
+                    if (damage > 0) {
+                        entity.attack(damage, 0.5f);
+                    }
+                    // TODO: Apply knockback
+                    entity.applyForce(new Impulse(new Vector2(100, 40)).calculate(entity, delta));
+                }
+            }
+        }
 
         // Update screen camera
         camera.position.add(
@@ -131,7 +161,7 @@ public class World {
     }
 
     public void addEntity(Entity entity) {
-        entities.add(entity);
+        spawningEntities.add(entity);
     }
 
     public void resize(int width, int height) {

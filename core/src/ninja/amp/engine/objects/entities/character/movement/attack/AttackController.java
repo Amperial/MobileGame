@@ -1,5 +1,7 @@
 package ninja.amp.engine.objects.entities.character.movement.attack;
 
+import ninja.amp.engine.physics.collision.Hitbox;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,10 @@ public abstract class AttackController {
     public boolean isAttacking() {
         return attacking;
     }
+
+    public abstract boolean hasAttackHitbox();
+
+    public abstract Hitbox getAttackHitbox();
 
     public void beginAttacking() {
         setAttack(Attack.Type.STANDARD);

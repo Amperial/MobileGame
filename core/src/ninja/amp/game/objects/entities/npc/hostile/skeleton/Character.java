@@ -22,6 +22,7 @@ import ninja.amp.engine.objects.entities.character.movement.attack.Attack;
 import ninja.amp.engine.objects.entities.character.movement.attack.AttackController;
 import ninja.amp.engine.objects.entities.stats.Stat;
 import ninja.amp.engine.physics.collision.EntityHitbox;
+import ninja.amp.engine.physics.collision.Hitbox;
 import ninja.amp.engine.physics.forces.Force;
 import ninja.amp.engine.physics.forces.FrictionForce;
 import ninja.amp.engine.physics.forces.Impulse;
@@ -135,6 +136,16 @@ public class Character extends Entity {
 
         Attack standard = new Attack(new StandardSwordAttack(body), Attack.Type.STANDARD, 0.5f, 0.15f, 0.15f);
         attacker = new AttackController(standard) {
+            @Override
+            public boolean hasAttackHitbox() {
+                return false;
+            }
+
+            @Override
+            public Hitbox getAttackHitbox() {
+                return null;
+            }
+
             @Override
             public boolean isPressed() {
                 return attack.getInput();
