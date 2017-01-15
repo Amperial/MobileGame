@@ -34,13 +34,12 @@ public class GameScreen extends Screen {
 
         log = new FPSLogger();
 
-        CharacterStats stats = new CharacterStats();
-        game.persistence.attachData(stats);
+        CharacterStats stats = new CharacterStats(this);
 
         world = new World(game, this, mapLoader);
 
         Atlas gui = new Atlas(GameAtlas.GUI, this);
-        final ControlMenu controlMenu = new ControlMenu(this, gui);
+        final ControlMenu controlMenu = new ControlMenu(this, gui, world);
         Character character = new GameCharacter(
                 this,
                 world,
@@ -60,7 +59,7 @@ public class GameScreen extends Screen {
         addMenu("control", controlMenu);
         addMenu("pause", pauseMenu);
         addMenu("settings", new SettingsMenu(game, this, pauseMenu));
-        addMenu("character", new CharacterMenu(game, this, world, stats)); // TEMP
+        addMenu("character", new CharacterMenu(game, gui, this, world, stats)); // TEMP
         setActiveMenu(controlMenu);
 
         game.music.setPlaying(new Music(Gdx.files.internal("music/sewers.mp3"), game.music, game.resources));

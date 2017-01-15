@@ -15,8 +15,8 @@ import ninja.amp.engine.graphics.gui.screens.ScreenAnchor;
 import ninja.amp.engine.graphics.textures.RegionTexture;
 import ninja.amp.engine.graphics.textures.Texture;
 import ninja.amp.engine.graphics.textures.atlas.Atlas;
-import ninja.amp.engine.graphics.textures.atlas.GameAtlas;
 import ninja.amp.engine.map.World;
+import ninja.amp.engine.objects.entities.character.Character;
 import ninja.amp.engine.objects.entities.stats.ScalingStat;
 import ninja.amp.engine.resources.audio.Sound;
 import ninja.amp.game.MobileGame;
@@ -24,10 +24,9 @@ import ninja.amp.game.persistence.CharacterStats;
 
 public class CharacterMenu extends TabMenu {
 
-    public CharacterMenu(final MobileGame game, final Screen screen, final World world, final CharacterStats characterStats) {
+    public CharacterMenu(final MobileGame game, Atlas gui, final Screen screen, final World world, final CharacterStats characterStats) {
         super(screen);
 
-        Atlas gui = new Atlas(GameAtlas.GUI, screen);
         final Sound sound = new Sound(Gdx.files.internal("sound/button_click.wav"), game.options, screen);
 
         // Popup
@@ -118,39 +117,55 @@ public class CharacterMenu extends TabMenu {
         Button health_increase = new Button(stat_increase, health, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
+                Character character = world.getCharacter();
+                ScalingStat health = (ScalingStat) character.getHealth();
+
                 // TEMP CODE TO RESET STAT LEVEL
-                if (((ScalingStat) world.getCharacter().getHealth()).getLevel() == ((ScalingStat) world.getCharacter().getHealth()).getMaxLevel()) {
-                    ((ScalingStat) world.getCharacter().getHealth()).setLevel(0);
+                if (health.getLevel() == health.getMaxLevel()) {
+                    health.setLevel(-1);
                 }
+
                 // TODO: Make leveling up cost x currency
-                ((ScalingStat) world.getCharacter().getHealth()).levelUp();
-                characterStats.setHealth(((ScalingStat) world.getCharacter().getHealth()).getLevel());
+                health.levelUp();
+                character.setCurrentHealth(character.getCurrentHealth() + health.getScaling());
+
+                characterStats.setHealth(health.getLevel());
                 sound.play();
             }
         };
         Button protection_increase = new Button(stat_increase, protection, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
+                Character character = world.getCharacter();
+                ScalingStat protection = (ScalingStat) character.getProtection();
+
                 // TEMP CODE TO RESET STAT LEVEL
-                if (((ScalingStat) world.getCharacter().getProtection()).getLevel() == ((ScalingStat) world.getCharacter().getProtection()).getMaxLevel()) {
-                    ((ScalingStat) world.getCharacter().getProtection()).setLevel(0);
+                if (protection.getLevel() == protection.getMaxLevel()) {
+                    protection.setLevel(-1);
                 }
+
                 // TODO: Make leveling up cost x currency
-                ((ScalingStat) world.getCharacter().getProtection()).levelUp();
-                characterStats.setProtection(((ScalingStat) world.getCharacter().getProtection()).getLevel());
+                protection.levelUp();
+
+                characterStats.setProtection(protection.getLevel());
                 sound.play();
             }
         };
         Button strength_increase = new Button(stat_increase, strength, Origin.TOP_RIGHT, new StaticOffset(16, 0)) {
             @Override
             public void click() {
+                Character character = world.getCharacter();
+                ScalingStat strength = (ScalingStat) character.getStrength();
+
                 // TEMP CODE TO RESET STAT LEVEL
-                if (((ScalingStat) world.getCharacter().getStrength()).getLevel() == ((ScalingStat) world.getCharacter().getStrength()).getMaxLevel()) {
-                    ((ScalingStat) world.getCharacter().getStrength()).setLevel(0);
+                if (strength.getLevel() == strength.getMaxLevel()) {
+                    strength.setLevel(-1);
                 }
+
                 // TODO: Make leveling up cost x currency
-                ((ScalingStat) world.getCharacter().getStrength()).levelUp();
-                characterStats.setStrength(((ScalingStat) world.getCharacter().getStrength()).getLevel());
+                strength.levelUp();
+
+                characterStats.setStrength(strength.getLevel());
                 sound.play();
             }
         };

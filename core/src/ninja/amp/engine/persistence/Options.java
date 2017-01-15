@@ -1,40 +1,27 @@
 package ninja.amp.engine.persistence;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+import ninja.amp.engine.resources.ResourceHandler;
 
-public class Options implements Persistent {
+public class Options extends Persistent {
 
-    private Preferences options;
-
-    public Options() {
-        load();
+    public Options(ResourceHandler handler) {
+        super("options", handler);
     }
 
     public boolean getSound() {
-        return options.getBoolean("sound");
+        return persistent.getBoolean("sound");
     }
 
     public void setSound(boolean sound) {
-        options.putBoolean("sound", sound);
+        persistent.putBoolean("sound", sound);
     }
 
     public boolean getMusic() {
-        return options.getBoolean("music");
+        return persistent.getBoolean("music");
     }
 
     public void setMusic(boolean music) {
-        options.putBoolean("music", music);
-    }
-
-    @Override
-    public void save() {
-        options.flush();
-    }
-
-    @Override
-    public void load() {
-        options = Gdx.app.getPreferences("options");
+        persistent.putBoolean("music", music);
     }
 
 }

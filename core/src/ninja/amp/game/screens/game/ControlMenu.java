@@ -18,6 +18,7 @@ import ninja.amp.engine.graphics.gui.screens.ScreenAnchor;
 import ninja.amp.engine.graphics.textures.RegionTexture;
 import ninja.amp.engine.graphics.textures.Texture;
 import ninja.amp.engine.graphics.textures.atlas.Atlas;
+import ninja.amp.engine.map.World;
 
 public class ControlMenu extends Menu {
 
@@ -26,7 +27,7 @@ public class ControlMenu extends Menu {
     private Input jump;
     private Input control;
 
-    public ControlMenu(final GameScreen screen, Atlas gui) {
+    public ControlMenu(final GameScreen screen, Atlas gui, final World world) {
         super(screen);
 
         Button leftButton = new HoverableButton(new RegionTexture(gui.findRegion("controls/left"), screen), new RegionTexture(gui.findRegion("controls/left_pressed"), screen), new ScreenAnchor(0, 0), Origin.BOTTOM_LEFT, new StaticOffset(1, 1));
@@ -51,22 +52,11 @@ public class ControlMenu extends Menu {
         Texture stat_health = new RegionTexture(gui.findRegion("status_bar"), screen);
         Texture stat_health_fill = new RegionTexture(gui.findRegion("status_fill_red"), screen);
         Object health = new StretchStatusBar(stat_health, stat_health_fill, characterButton, Origin.TOP_LEFT, new StaticOffset(characterButton.getWidth() + 1, -2)) {
-            float health = 0;
-            float increment = 1.7f;
-            int direction = 1;
-
             @Override
             public float fillPercent() {
-                // TODO: get this from character stats
-                health += (direction * increment * Gdx.graphics.getDeltaTime());
-                if (health > 1) {
-                    direction = -1;
-                    health = 1;
-                } else if (health < 0) {
-                    direction = 1;
-                    health = 0;
-                }
-                return 1f;
+                float max = world.getCharacter().getHealth().calculate();
+                float health = Math.min(Math.max(0, world.getCharacter().getCurrentHealth()), max);
+                return health / max;
             }
         };
         Texture stat_stamina = new RegionTexture(gui.findRegion("status_bar"), screen);

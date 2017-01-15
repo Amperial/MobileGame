@@ -1,49 +1,36 @@
 package ninja.amp.game.persistence;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import ninja.amp.engine.persistence.Persistent;
+import ninja.amp.engine.resources.ResourceHandler;
 
-public class CharacterStats implements Persistent {
+public class CharacterStats extends Persistent {
 
-    private Preferences stats;
-
-    public CharacterStats() {
-        load();
+    public CharacterStats(ResourceHandler handler) {
+        super("stats", handler);
     }
 
     public int getHealth() {
-        return stats.getInteger("health");
+        return persistent.getInteger("health");
     }
 
     public void setHealth(int health) {
-        stats.putInteger("health", health);
+        persistent.putInteger("health", health);
     }
 
     public int getProtection() {
-        return stats.getInteger("protection");
+        return persistent.getInteger("protection");
     }
 
     public void setProtection(int protection) {
-        stats.putInteger("protection", protection);
+        persistent.putInteger("protection", protection);
     }
 
     public int getStrength() {
-        return stats.getInteger("strength");
+        return persistent.getInteger("strength");
     }
 
     public void setStrength(int strength) {
-        stats.putInteger("strength", strength);
-    }
-
-    @Override
-    public void save() {
-        stats.flush();
-    }
-
-    @Override
-    public void load() {
-        stats = Gdx.app.getPreferences("stats");
+        persistent.putInteger("strength", strength);
     }
 
 }

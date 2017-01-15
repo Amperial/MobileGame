@@ -33,6 +33,8 @@ public class Entity {
     private Stat protection;
     private Stat strength;
 
+    private float currentHealth;
+
     // TODO: Use equipment class for items
     private Set<Item> items;
     private Set<Effect> effects;
@@ -67,6 +69,7 @@ public class Entity {
 
     public void initialize() {
         initializeBody();
+        currentHealth = health.calculate();
         // Override to initialize additional code
     }
 
@@ -158,6 +161,14 @@ public class Entity {
         return strength;
     }
 
+    public float getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(float health) {
+        this.currentHealth = health;
+    }
+
     public Set<Item> getItems() {
         return items;
     }
@@ -182,12 +193,18 @@ public class Entity {
         dead = true;
     }
 
-    public boolean attack(float immunity) {
-        // TODO
+    public boolean attack(float damage, float immunity) {
         if (isImmune()) {
             return false;
         } else {
-            this.immunity = immunity;
+            damage -= protection.calculate();
+            currentHealth -= damage;
+            if (currentHealth < 0) {
+                currentHealth = 0;
+                die();
+            } else {
+                this.immunity = immunity;
+            }
             return true;
         }
     }
@@ -205,6 +222,7 @@ public class Entity {
                 effectIterator.remove();
             }
         }
+        currentHealth = Math.min(currentHealth, health.calculate());
 
         acceleration.scl(1 / mass.getMass());
         acceleration.limit();
