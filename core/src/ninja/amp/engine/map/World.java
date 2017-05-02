@@ -4,13 +4,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import ninja.amp.engine.Game;
 import ninja.amp.engine.graphics.backgrounds.Background;
+import ninja.amp.engine.graphics.gui.menus.Menu;
 import ninja.amp.engine.graphics.gui.screens.Screen;
 import ninja.amp.engine.graphics.gui.screens.ScreenCamera;
 import ninja.amp.engine.objects.entities.Entity;
 import ninja.amp.engine.objects.entities.character.Character;
 import ninja.amp.engine.particles.ParticleSystem;
-import ninja.amp.engine.physics.collision.Hitbox;
-import ninja.amp.engine.physics.forces.Impulse;
 import ninja.amp.engine.physics.vectors.limits.CubeLimit;
 import ninja.amp.engine.physics.vectors.limits.Limit;
 
@@ -25,6 +24,8 @@ public class World {
     private ScreenCamera camera;
     private float camElasticity = 10;
     private Vector2 camOffset = new Vector2();
+
+    private Menu worldMenu;
 
     private Background background;
 
@@ -43,6 +44,9 @@ public class World {
 
         // Setup camera
         camera = new ScreenCamera(screen, Limit.VEC3);
+
+        // Load world menu
+        worldMenu = new Menu(screen);
 
         // Load map
         map = mapLoader.loadMap(screen);
@@ -90,6 +94,7 @@ public class World {
         particles.update(delta);
 
         // Update damaging hitboxes
+        /*
         if (character.getAttacker().isAttacking() && character.getAttacker().hasAttackHitbox()) {
             float strength = character.getStrength().calculate();
             Hitbox attack = character.getAttacker().getAttackHitbox();
@@ -105,6 +110,7 @@ public class World {
                 }
             }
         }
+        */
 
         // Update screen camera
         camera.position.add(
@@ -129,13 +135,11 @@ public class World {
         particles.draw(game.batch);
 
         // Draw Character
-        character.getBody().draw(game.batch, delta);
+        character.draw(game.batch, delta);
 
         // Draw Entities
         for (Entity entity : entities) {
-            if (entity.getBody() != null) {
-                entity.getBody().draw(game.batch, delta);
-            }
+            entity.draw(game.batch, delta);
         }
 
         // Draw Map Foreground

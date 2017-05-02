@@ -1,0 +1,802 @@
+
+=======================================EVERYTHING BELOW THIS LINE IS WORLD CLASS.=======================================
+
+// TODO: Move into engine package
+public class World {
+
+    private MobileGame game;
+    private ScreenCamera camera;
+    private float elasticity = 10;
+    private float yOffset = 0;
+
+    public Map map;
+
+    private Character character;
+    private Bat bat; // TODO: remove
+    private Set<Entity> entities = new HashSet<Entity>();
+
+    private ParticleSystem particles;
+
+    private float scale;
+
+    private Hitbox sword_hitbox; // TODO: remove
+    private Hitbox sword_hitbox_flip; // TODO: remove
+
+    public World(MobileGame game, final GameScreen screen) {
+        this.game = game;
+
+        //AnimatedTexture.load(Gdx.files.internal("entities/coin_gold.png"), 8, 8, 0.125f, Animation.PlayMode.LOOP, screen);
+
+        camera = new ScreenCamera(screen, Limit.VEC3); // TODO: set camera initial position
+
+        MapLoader loader = new MapLoader(Gdx.files.internal("maps/1/map.txt"));
+        map = loader.loadMap(screen);
+
+        //sword is 5f/24f thick, 1 long starting at 8f/24f
+        /*
+
+        */
+
+        bat = new Bat(
+                screen,
+                this,
+                new LVector2(2, 29, Limit.VEC2),
+                new AreaRange(new Vector2(1, 29), new Rectangle(0, 0, 30, 7))
+        );
+
+        /*
+        bat.setAction(new Follow(bat, 5) {
+            Vector2 target = new Vector2();
+
+            @Override
+            public Vector2 getTarget() {
+                //return target.set(5, 2);
+                return target.set(character.getPosition()).add(0.5f, 2.5f);
+            }
+        });
+        */
+        //bat.setAction(new WanderInRange(bat, 5, bat.getPosition().cpy(), 2));
+        //bat.setAction(new Patrol(bat, 5f, bat.getPosition().cpy(), bat.getPosition().cpy().add(0, 1), bat.getPosition().cpy().add(1, 1), bat.getPosition().cpy().add(1, 0)));
+        entities.add(bat);
+
+        final Texture particleTexture = new Atlas(GameAtlas.PARTICLES, screen).createRegionTexture("particles");
+        particles = new ParticleSystem();
+        ParticlePool pool = new ParticlePool(10000) {
+            Texture fire_1 = new ParticleTexture(particleTexture, 4, 7, screen);
+            Texture fire_2 = new ParticleTexture(particleTexture, 3, 7, screen);
+            Texture fire_3 = new ParticleTexture(particleTexture, 2, 7, screen);
+            Texture fire_4 = new ParticleTexture(particleTexture, 1, 7, screen);
+            Texture fire_5 = new ParticleTexture(particleTexture, 0, 7, screen);
+            float duration = 1.2f;
+            @Override
+            public Particle create() {
+                return new MovingParticle() {
+                    @Override
+                    public Texture getTexture() {
+                        if (getLifetime() / duration > 0.96f) {
+                            return fire_1;
+                        } else if (getLifetime() / duration > 0.92f) {
+                            return fire_2;
+                        } else if (getLifetime() / duration > 0.76f) {
+                            return fire_3;
+                        } else if (getLifetime() / duration > 0.6f) {
+                            return fire_4;
+                        } else {
+                            return fire_5;
+                        }
+                    }
+                    @Override
+                    public float getSize() {
+                        return super.getSize() * (getLifetime() / duration);
+                    }
+                };
+            }
+        };
+        particles.addEmitter(createTorch(pool, 2, 32));
+        particles.addEmitter(createTorch(pool, 6, 32));
+        particles.addEmitter(createTorch(pool, 10, 32));
+        particles.addEmitter(createTorch(pool, 14, 32));
+        particles.addEmitter(createTorch(pool, 18, 32));
+        particles.addEmitter(createTorch(pool, 28, 32));
+    }
+
+    private ParticleEmitter createTorch(ParticlePool pool, final float x, final float y) {
+        return new ConstantEmitter(pool, 100, 0.03f) {
+            @Override
+            public void spawn(Particle particle) {
+                ((MovingParticle) particle).set(null, x + 0.5f + MathUtils.random(-0.025f, 0.025f), MathUtils.random(-0.25f, 0.25f), y + 0.5f, MathUtils.random(0.5f, 0.8f), 0.25f, MathUtils.random(-90f, 90f), MathUtils.random(-360f, 360f), 1.2f);
+            }
+        };
+    }
+
+    public InputProcessor getCharacterProcessor(final Screen screen) {
+        return new InputProcessor() {
+            @Override
+            public boolean keyDown(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyTyped(char character) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                float charX = character.getPosition().x * scale;
+                float charY = character.getPosition().y * scale;
+
+                Vector3 point = camera.unproject(new Vector3(screenX, screenY, 0));
+
+                boolean containsx = point.x >= charX && point.x <= charX + scale;
+                boolean containsy = point.y >= charY && point.y <= charY + scale;
+
+                if (containsx && containsy) {
+                    screen.openPopup(screen.getMenu("character"));
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                return false;
+            }
+
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(int amount) {
+                return false;
+            }
+        };
+    }
+
+    public void update(float delta) {
+        if (delta > 0.05f) {
+            delta = 0.05f;
+        }
+
+        character.update(delta);
+        for (Entity entity : entities) {
+            entity.update(delta);
+        }
+
+        particles.update(delta);
+        /*
+        if (pose_attack && attackController.getAttack().getState() == Attack.State.ATTACK && attackController.getAttack().getPoseTime() > 0.2f) {
+            if (bat.getHitbox().intersects(lastleft ? sword_hitbox_flip : sword_hitbox) && bat.attack(0.5f)) {
+                if (lastleft) {
+                    bat.applyForce(new Impulse(new Vector2(-100, 40)).calculate(bat, delta));
+                } else {
+                    bat.applyForce(new Impulse(new Vector2(100, 40)).calculate(bat, delta));
+                }
+            }
+        } else if (bat.getHitbox().intersects(character.getHitbox()) && character.attack(2f)) {
+            System.out.println("TOOK DAMAGE");
+            // BATS SHOULD PICK UP PLAYERS AND CARRY THEM THROUGH THE AIR BEFORE DROPPING THEM SOMEWHERE
+            character.applyForce(new Impulse(new Vector2(0, 25)).calculate(character, delta));
+            bat.applyForce(new Impulse(new Vector2(0, 75)).calculate(bat, delta));
+        }
+        */
+
+        camera.position.add(((character.getPosition().x + 0.5f) * scale - camera.position.x) * delta * elasticity, ((character.getPosition().y + 0.5f + yOffset) * scale - camera.position.y) * delta * elasticity, 0);
+    }
+
+    public void render(float delta) {
+        camera.apply(game.batch);
+        game.batch.begin();
+
+        // Draw Map
+        map.getBackground().draw(game.batch, 0, 64, 0, 36);
+        map.getMidground().draw(game.batch, 0, 64, 0, 36);
+        //map.draw(game.batch, 0, 100, 0, 50);
+
+        particles.draw(game.batch);
+
+        bat.getBody().draw(game.batch, delta);
+        //drawHitbox((PolygonHitbox) bat.getHitbox(), (int) ((PolygonHitbox) bat.getHitbox()).getX(), (int)((PolygonHitbox) bat.getHitbox()).getY());
+
+        // Draw Character
+        //tex.update(delta);
+        //game.batch.draw(tex.getRegion(), character.position().x * scale, character.position().y * scale, scale, scale);
+        //game.batch.draw(CastleTile.SOLID_FLOOR.getTexture(), character.position().x * scale, character.position().y * scale, scale, scale);
+        //drawHitbox(game.batch, (RectangleHitbox) character.getHitbox());
+        character.getBody().draw(game.batch, delta);
+        /*
+        if (lastleft) {
+            drawHitbox((PolygonHitbox) sword_hitbox_flip, (int)((PolygonHitbox) sword_hitbox_flip).getX(), (int)((PolygonHitbox) sword_hitbox_flip).getY());
+        } else {
+            drawHitbox((PolygonHitbox) sword_hitbox, (int)((PolygonHitbox) sword_hitbox).getX(), (int)((PolygonHitbox) sword_hitbox).getY());
+        }
+        */
+
+
+        map.getForeground().draw(game.batch, 0, 64, 0, 36);
+
+        game.batch.end();
+    }
+
+    /*
+    private void drawHitbox(PolygonHitbox hitbox, int xposition, int yposition) {
+        Polygon polygon = hitbox.getPolygon();
+        for (int x = 0; x < 160; x++) {
+            for (int y = 0; y < 160; y++) {
+                // range from xposition -5 to xposition + 5
+                float xpos = xposition + (x / 16f) - 5f;
+                float ypos = yposition + (y / 16f) - 5f;
+                if (polygon.contains(xpos, ypos)) {
+                    game.batch.draw(CastleTile.SOLID_FLOOR.getTexture(), xpos * scale, ypos * scale, 2, 2);
+                }
+            }
+        }
+    }
+    */
+
+    public Map getMap() {
+        return map;
+    }
+
+    public float getbackgroundx() {
+        return (map.getWidth() / 2) - camera.position.x;
+    }
+
+    public float getbackgroundy() {
+        return (camera.viewportHeight / 2) - camera.position.y;
+    }
+
+    public void resize(int width, int height) {
+        scale = 16 * width / 300;
+
+        map.setScale(scale);
+
+        camera.setToOrtho(false, width, height);
+        camera.setLimit(new CubeLimit(new Vector3(camera.viewportWidth / 2, camera.viewportHeight / 2, 0), new Vector3(map.getWidth() - (camera.viewportWidth / 2), map.getHeight() - (camera.viewportHeight / 2), 0)));
+        camera.position.set((character.getPosition().x + 0.5f) * scale, (character.getPosition().y + 0.5f + yOffset) * scale, 0);
+
+        character.getBody().setScale(scale);
+
+        bat.getBody().setScale(scale);
+
+        particles.setScale(scale);
+    }
+
+    public void dispose() {
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+    }
+
+}
+
+========================================================================================================================
+========================================================================================================================
+========================================================================================================================
+=======================================EVERYTHING BELOW THIS LINE IS UNKNOWN OLD.=======================================
+========================================================================================================================
+========================================================================================================================
+========================================================================================================================
+
+
+        //inventory colors?
+        //Color menu = new Color(85f / 255f, 98f / 255f, 112f / 255f, 1f);
+        //Color outline = new Color(113f / 255f, 129f / 255f, 147f / 255f, 1f);
+
+
+        //map.draw(game.batch);
+
+        //game.batch.draw(CastleTile.BOOKSHELF.getTexture(), character.position().x * scale, character.position().y * scale, scale, scale);
+        // update all entities
+
+
+public class GameScreen implements Screen {
+    /*
+    private World world;
+    
+    private PerspectiveCamera cam;
+    private ModelBatch modelBatch;
+    private Model model;
+    private ModelInstance instance;
+    
+    private Environment environment;
+    
+    FrameBuffer fbo;
+    SpriteBatch fboBatch;
+    
+    CameraInputController cameraInputController;
+    
+    AssetManager assets;
+    */
+    
+    /*
+    private OrthographicCamera camera;
+
+    private SpriteBatch batch;
+    */
+
+    public GameScreen() {
+        /*
+        world = new World();
+        
+        modelBatch = new ModelBatch();
+        
+        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        cam.position.set(5f, 5f, 5f);
+        cam.lookAt(0, 0, 0);
+        cam.near = 1f;
+        cam.far = 300f;
+        cam.update();
+        */
+
+        //ModelBuilder builder = new ModelBuilder();
+        //model = builder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.BLUE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        //instance = new ModelInstance(model);
+        
+        /*
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, true);
+        fbo.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        fboBatch = new SpriteBatch();
+        
+        cameraInputController = new CameraInputController(cam);
+        Gdx.input.setInputProcessor(cameraInputController);
+        
+        assets = new AssetManager();
+        assets.load("knight.g3db", Model.class);
+        assets.finishLoading();
+        model = assets.get("knight.g3db", Model.class);
+        instance = new ModelInstance(model);
+        */
+        
+        
+        
+        
+        /*
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 100, 100);
+
+        batch = new SpriteBatch();
+        */
+    }
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+        /*
+
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        
+        batch.begin();
+        
+        
+        
+        batch.end();
+        */
+        
+        /*
+        cameraInputController.update();
+        
+        fbo.begin();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        
+        Gdx.gl.glViewport(0, 0, fbo.getWidth(), fbo.getHeight());
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        
+        
+        modelBatch.begin(cam);
+        modelBatch.render(instance, environment);
+        modelBatch.end();
+        
+        fbo.end();
+        
+        fboBatch.begin();
+        fboBatch.draw(fbo.getColorBufferTexture(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1, 1);
+        fboBatch.end();
+        
+        world.update(delta);
+        */
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        /*
+        fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, true);
+        fbo.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        fboBatch = new SpriteBatch();
+        
+        */
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        //batch.dispose();
+        
+        /*
+        modelBatch.dispose();
+        model.dispose();
+        fbo.dispose();
+        fboBatch.dispose();
+        */
+    }
+    
+}
+
+
+
+
+
+
+
+        if (character.right && !character.left) {
+            if (character.position().y == ((RectangleLimit)character.position().limit).rectangle.getY()) {
+                if (character.getVelocity().x < 0) {
+                    character.getVelocity().x = 0;
+                }
+                character.applyForce(right_ground.calculate(character, delta));
+            } else {
+                character.applyForce(right_air.calculate(character, delta));
+            }
+        } else if (character.left && !character.right) {
+            if (character.position().y == ((RectangleLimit)character.position().limit).rectangle.getY()) {
+                if (character.getVelocity().x > 0) {
+                    character.getVelocity().x = 0;
+                }
+                character.applyForce(left_ground.calculate(character, delta));
+            } else {
+                character.applyForce(left_air.calculate(character, delta));
+            }
+        } else if (character.position().y == ((RectangleLimit)character.position().limit).rectangle.getY()){
+            character.applyForce(deceleration.calculate(character, delta));
+        }
+
+
+
+
+public enum CastleTile implements Tile {
+    BRICK_1(0, 0),
+    BRICK_2(1, 0),
+    BRICK_3(2, 0),
+    BRICK_4(3, 0),
+    LARGE_WINDOW_1(4, 0),
+    LARGE_WINDOW_2(5, 0),
+    LARGE_WINDOW_3(4, 1),
+    LARGE_WINDOW_4(5, 1),
+    LARGE_WINDOW_5(4, 2),
+    LARGE_WINDOW_6(5, 2),
+    BOOKSHELF(3, 8),
+    TAPESTRY_RED(5, 7),
+    TORCH(2, 7),
+    CANDLESTICK(2, 8),
+    DOOR_LIGHT(0, 4),
+    DOOR_DARK(1, 4),
+    BONES(12, 8),
+    FLOOR(11, 1),
+    BRICK_TOP(8, 0);
+
+    public static Texture castle;
+    public static Texture castle_n;
+    private TextureRegion region;
+    private TextureRegion region_n;
+    private int x, y;
+
+    CastleTile(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public TextureRegion getTexture() {
+        return region;
+    }
+
+    @Override
+    public TextureRegion getNormal() {
+        return region_n;
+    }
+
+    public static void load() {
+        castle = new Texture(Gdx.files.internal("tiles/castle.png"));
+        castle_n = new Texture(Gdx.files.internal("tiles/castle_n.png"));
+        for (CastleTile castleTile : values()) {
+            castleTile.region = new TextureRegion(castle, castleTile.x*16, castleTile.y*16, 16, 16);
+            castleTile.region_n = new TextureRegion(castle_n, castleTile.x*16, castleTile.y*16, 16, 16);
+        }
+    }
+
+    public static void dispose() {
+        castle.dispose();
+        castle_n.dispose();
+    }
+}
+
+
+public interface Tile {
+    TextureRegion getTexture();
+
+    TextureRegion getNormal();
+}
+
+
+public class TileMap {
+    private Texture castle;
+    private Tile[][][] tiles;
+    private float scale;
+
+    public TileMap() {
+        CastleTile.load();
+
+        tiles = new Tile[16][9][];
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 9; y++) {
+                tiles[x][y] = new Tile[1];
+            }
+        }
+        for (int x = 0; x < 16; x++) {
+            for  (int y = 1; y < 6; y++) {
+                tiles[x][y][0] = CastleTile.BRICK_1;
+            }
+            tiles[x][6][0] = CastleTile.BRICK_TOP;
+            tiles[x][0][0] = CastleTile.FLOOR;
+        }
+
+        tiles[4][4] = new Tile[2];
+        tiles[4][4][0] = CastleTile.BRICK_1;
+        tiles[4][4][1] = CastleTile.TORCH;
+        tiles[5][4][0] = CastleTile.LARGE_WINDOW_1;
+        tiles[6][4][0] = CastleTile.LARGE_WINDOW_2;
+        tiles[7][4] = new Tile[2];
+        tiles[7][4][0] = CastleTile.BRICK_1;
+        tiles[7][4][1] = CastleTile.TORCH;
+
+        tiles[5][3][0] = CastleTile.LARGE_WINDOW_3;
+        tiles[6][3][0] = CastleTile.LARGE_WINDOW_4;
+
+
+        tiles[4][2] = new Tile[2];
+        tiles[4][2][0] = CastleTile.BRICK_1;
+        tiles[4][2][1] = CastleTile.TAPESTRY_RED;
+        tiles[5][2][0] = CastleTile.LARGE_WINDOW_5;
+        tiles[6][2][0] = CastleTile.LARGE_WINDOW_6;
+        tiles[7][2] = new Tile[2];
+        tiles[7][2][0] = CastleTile.BRICK_1;
+        tiles[7][2][1] = CastleTile.TAPESTRY_RED;
+
+        tiles[2][1] = new Tile[2];
+        tiles[2][1][0] = CastleTile.BRICK_1;
+        tiles[2][1][1] = CastleTile.DOOR_DARK;
+    }
+
+    public void draw(Batch batch) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 9; y++) {
+                for (Tile tile : tiles[x][y]) {
+                    if (tile != null) {
+                        batch.draw(tile.getTexture(), x*scale, y*scale, scale, scale);
+                    }
+                }
+            }
+        }
+    }
+
+    public void dispose() {
+        CastleTile.dispose();
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+}
+
+
+public interface TileSet {
+
+}
+
+
+
+public class World {
+
+    private MobileGame game;
+    private Character character;
+    private Map<String, Force> forces = new HashMap<String, Force>();
+    private Set<Force> impulses = new HashSet<Force>();
+    private Texture texture;
+    private float scale;
+
+    Force gravity = new SimpleForce(new Vector2(0, -20f), false);
+    Force left_ground = new SimpleForce(new Vector2(-50, 0), false);
+    Force right_ground = new SimpleForce(new Vector2(50, 0), false);
+    Force left_air = new SimpleForce(new Vector2(-25, 0), false);
+    Force right_air = new SimpleForce(new Vector2(25, 0), false);
+    Force deceleration = new Force() {
+        @Override
+        public Vector2 calculate(Entity entity, float delta) {
+            return new Vector2(entity.getVelocity()).scl(-25);
+        }
+    };
+
+    public World(MobileGame game) {
+        this.game = game;
+        texture = new Texture(Gdx.files.internal("entities/coin.png"));
+        character = new Character(this, new LVector2(3, 3, Limit.NONE), new LVector2(new RectangleLimit(new Rectangle(-5, -20, 10, 30))) {
+            @Override
+            public void limit() {
+                super.limit();
+                if (x != 0 && x < 0.01f && x > -0.01f) {
+                    x = 0;
+                }
+                if (y != 0 && y < 0.01f && y > -0.01f) {
+                    y = 0;
+                }
+            }
+        }, new LVector2(new LengthLimit<Vector2>(100f)), 1f, null);
+    }
+
+    public void update(float delta) {
+        if (delta > 0.05f) {
+            delta = 0.05f;
+        }
+
+        for (Force force : forces.values()) {
+            character.applyForce(force.calculate(character, delta));
+        }
+        for (Force force : impulses) {
+            character.applyForce(force.calculate(character, delta));
+        }
+        character.applyForce(gravity.calculate(character, delta));
+        impulses.clear();
+
+        character.update(delta);
+    }
+
+    public void render(float delta) {
+        //map.draw(game.batch);
+
+        //game.batch.draw(CastleTile.BOOKSHELF.getTexture(), character.position().x * scale, character.position().y * scale, scale, scale);
+        // update all entities
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void addForce(String name, Force force) {
+        forces.put(name, force);
+    }
+
+    public void removeForce(String name) {
+        forces.remove(name);
+    }
+
+    public void addImpulse(Force force) {
+        impulses.add(force);
+    }
+}
+
+
+
+
+    private void move_x(Entity entity, float x) {
+        Vector2 position = entity.getPosition();
+        Rectangle hitbox;
+        if (entity.getHitbox() instanceof RectangleHitbox) {
+            hitbox = ((RectangleHitbox)entity.getHitbox()).getRectangle();
+        } else {
+            hitbox = defaultHitbox;
+        }
+        float hitbox_x = hitbox.getX();
+        float hitbox_y = hitbox.getY();
+        float hitbox_w = hitbox.getWidth();
+        float hitbox_h = hitbox.getHeight();
+
+        // standing at position 1.6, 0
+        // moving to the right by 0.5f
+        // hitbox_x = 0;
+        // hitbox_y = 0;
+        // hitbox_w = 1;
+        // hitbox_h = 1;
+
+        int tile_ymin = (int) position.y;//0
+        int tile_ymax = (int) Math.ceil(position.y);//1
+
+        if (x > 0f) {
+            int tile_xmin = (int) position.x + 1;//2
+            int tile_xmax = (int) Math.ceil(position.x + 1 + x);//4
+
+            for (int tile_x = tile_xmin; tile_x <= tile_xmax; tile_x++) {//tile_x = 2, 3, 4
+                boolean solid_column = false;
+                for (int tile_y = tile_ymin; tile_y <= tile_ymax; tile_y++) {//tile_y = 0, 1
+                    if (tiles[tile_x][tile_y][0].isSolid()) {
+                        solid_column = true;
+                    }
+                }
+
+                if (solid_column) {
+                    break;
+                } else if (position.x < tile_x){//1.6<2, 2<3
+                    float d = Math.min(x, tile_x - position.x);//0.4, 0.1
+                    position.x += d;//2, 2.1
+                    x -= d;//0.1, 0
+                }
+            }
+        } else if (x < 0f) {
+            int tile_xmin = (int) (position.x + x);
+            int tile_xmax = (int) Math.ceil(position.x);
+
+            for (int tile_x = tile_xmax; tile_x >= tile_xmin; tile_x--) {
+                boolean solid_column = false;
+                for (int tile_y = tile_ymin; tile_y <= tile_ymax; tile_y++) {
+                    if (tiles[tile_x][tile_y][0].isSolid()) {
+                        solid_column = true;
+                    }
+                }
+
+                if (solid_column) {
+                    if (position.x > tile_x + 1) {
+                        float d = Math.min(-x, position.x - tile_x + 1);
+                        position.x -= d;
+                        break;
+                    }
+                } else if (position.x > tile_x){
+                    float d = Math.min(-x, position.x - tile_x);
+                    position.x -= d;
+                    x += d;
+                }
+            }
+        }
+
+        if (x != 0) {
+            entity.getVelocity().x = 0;
+        }
+    }

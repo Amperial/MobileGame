@@ -1,0 +1,21 @@
+Hi,
+
+I've been a fan for the last several months of your pixel art style and the effort you put into your youtube videos! I have been working on a mobile game for about a year, which currently uses assets I created myself as placeholders to eventually be replaced with professional assets. I am in search of someone who can make the game really stand out and would love to bring you on board.
+
+In the next couple of months I am trying to get the following completed:
+- GUI (menu and button style, hearts, controls, backgrounds)
+- Tiles (a few tilesets, tiles that could be found anywhere, etc.)
+- Entities (main character, at least a dozen or so enemies, coins, etc.)
+- Items (armor, swords, bows, hammers, spears, and a few variations of each)
+
+Something I should mention is that I created a custom entity and body part system, so animations are created through code rather than pixel art. This allows armor pieces to be applied to entities, for them to hold tons of different weapons, have different attack animations depending on type of weapon, and really anything that it would need to accomplish.
+
+My time frame is completing the game before August as the university I attend actually provided me with funds to work on this project, which I am expected to report back on at the beginning of the next school semester. In case this isn't enough time, I could get back to you on which parts of the project to prioritize (definitely all of the gui, one tileset, one of each weapon type, etc.)
+
+The budget provided to me is $1000 which I hope can go a long way towards making an awesome game that people truly enjoy playing. Please let me know if this fits your expectations for custom private assets, how much could be completed before my deadline, and how much could be completed with my budget regardless of time. If everything works out then I would be interested in continuing to have custom tilesets, entities, and weapons created to extend the game in the future.
+
+After getting everything sorted out I can provide all of my current assets, the current game in case you want to check out its style, and my collection of pixel art that has accumulated over time as inspiration. I'm sure it would also help if I looked through all of your public assets to provide some input on what I like and want to see more of. I look forward to hearing back from you!
+
+Sincerely,
+
+Austin Payne

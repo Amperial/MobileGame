@@ -34,7 +34,6 @@ import ninja.amp.engine.physics.vectors.limits.Limit;
 public class Slime extends NPC {
 
     private Screen screen;
-    private Body body;
     private Range range;
     private Action action;
     private int size;

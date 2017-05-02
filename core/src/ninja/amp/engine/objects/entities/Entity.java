@@ -1,5 +1,6 @@
 package ninja.amp.engine.objects.entities;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import ninja.amp.engine.map.World;
 import ninja.amp.engine.map.collision.CollisionState;
@@ -48,6 +49,8 @@ public class Entity {
         this.acceleration = acceleration;
         this.mass = mass;
 
+        this.state = CollisionState.NORMAL;
+
         this.health = health;
         this.protection = protection;
         this.strength = strength;
@@ -60,8 +63,6 @@ public class Entity {
         if (strength instanceof EntityStat) {
             ((EntityStat) strength).setEntity(this);
         }
-
-        this.state = CollisionState.NORMAL;
 
         this.items = new HashSet<Item>();
         this.effects = new HashSet<Effect>();
@@ -240,6 +241,12 @@ public class Entity {
             if (immunity < 0) {
                 immunity = 0;
             }
+        }
+    }
+
+    public void draw(Batch batch, float delta) {
+        if (body != null) {
+            body.draw(batch, delta);
         }
     }
 

@@ -1,0 +1,167 @@
+
+entities.png
+size: 128,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+barrel
+  rotate: false
+  xy: 63, 15
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+book
+  rotate: false
+  xy: 67, 37
+  size: 9, 3
+  orig: 9, 3
+  offset: 0, 0
+  index: -1
+character/arm_lower
+  rotate: false
+  xy: 53, 1
+  size: 2, 6
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
+character/arm_upper
+  rotate: false
+  xy: 57, 1
+  size: 2, 6
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
+character/body
+  rotate: false
+  xy: 53, 9
+  size: 8, 14
+  orig: 8, 14
+  offset: 0, 0
+  index: -1
+character/head
+  rotate: false
+  xy: 73, 15
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+character/leg_lower
+  rotate: false
+  xy: 61, 1
+  size: 2, 6
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
+character/leg_upper
+  rotate: false
+  xy: 95, 42
+  size: 2, 6
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
+coin_copper
+  rotate: false
+  xy: 1, 55
+  size: 64, 8
+  orig: 64, 8
+  offset: 0, 0
+  index: -1
+coin_gold
+  rotate: false
+  xy: 1, 45
+  size: 64, 8
+  orig: 64, 8
+  offset: 0, 0
+  index: -1
+coin_normal
+  rotate: false
+  xy: 1, 35
+  size: 64, 8
+  orig: 64, 8
+  offset: 0, 0
+  index: -1
+coin_silver
+  rotate: false
+  xy: 35, 25
+  size: 64, 8
+  orig: 64, 8
+  offset: 0, 0
+  index: -1
+crate
+  rotate: false
+  xy: 117, 55
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+hostile/bat/head
+  rotate: false
+  xy: 87, 50
+  size: 18, 13
+  orig: 18, 13
+  offset: 0, 0
+  index: -1
+hostile/bat/wing_left
+  rotate: false
+  xy: 35, 2
+  size: 16, 21
+  orig: 16, 21
+  offset: 0, 0
+  index: -1
+hostile/bat/wing_right
+  rotate: false
+  xy: 67, 42
+  size: 18, 21
+  orig: 18, 21
+  offset: 0, 0
+  index: -1
+hostile/skeleton/arm_lower
+  rotate: false
+  xy: 93, 16
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+hostile/skeleton/arm_upper
+  rotate: false
+  xy: 97, 16
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+hostile/skeleton/body
+  rotate: false
+  xy: 107, 51
+  size: 8, 12
+  orig: 8, 12
+  offset: 0, 0
+  index: -1
+hostile/skeleton/head
+  rotate: false
+  xy: 83, 15
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+hostile/skeleton/leg_lower
+  rotate: false
+  xy: 87, 41
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+hostile/skeleton/leg_upper
+  rotate: false
+  xy: 91, 41
+  size: 2, 7
+  orig: 2, 7
+  offset: 0, 0
+  index: -1
+hostile/slime/slime
+  rotate: false
+  xy: 1, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,615 @@
+
+gui.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+alert
+  rotate: false
+  xy: 515, 48
+  size: 2, 9
+  orig: 2, 9
+  offset: 0, 0
+  index: -1
+buttons/check
+  rotate: false
+  xy: 714, 95
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/controls
+  rotate: false
+  xy: 388, 1
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/credits
+  rotate: false
+  xy: 236, 9
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/exit
+  rotate: false
+  xy: 697, 77
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+menus/popup_close
+  rotate: false
+  xy: 697, 77
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/facebook
+  rotate: false
+  xy: 699, 59
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/gear
+  rotate: false
+  xy: 596, 5
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/help
+  rotate: false
+  xy: 614, 5
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/home
+  rotate: false
+  xy: 632, 5
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/large
+  rotate: false
+  xy: 470, 29
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/large_pressed
+  rotate: false
+  xy: 515, 59
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/larger
+  rotate: false
+  xy: 454, 1
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/larger_pressed
+  rotate: false
+  xy: 516, 95
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/largest
+  rotate: false
+  xy: 388, 37
+  size: 80, 16
+  orig: 80, 16
+  offset: 0, 0
+  index: -1
+buttons/largest_pressed
+  rotate: false
+  xy: 388, 19
+  size: 80, 16
+  orig: 80, 16
+  offset: 0, 0
+  index: -1
+buttons/lock
+  rotate: false
+  xy: 1004, 77
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/medium
+  rotate: false
+  xy: 665, 59
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+buttons/medium_pressed
+  rotate: false
+  xy: 520, 6
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+buttons/minus
+  rotate: false
+  xy: 717, 59
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/music
+  rotate: false
+  xy: 647, 77
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/music_off
+  rotate: false
+  xy: 735, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/music_on
+  rotate: false
+  xy: 753, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/next
+  rotate: false
+  xy: 771, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/play
+  rotate: false
+  xy: 565, 59
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/plus
+  rotate: false
+  xy: 825, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/previous
+  rotate: false
+  xy: 843, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/quit
+  rotate: false
+  xy: 582, 95
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/resume
+  rotate: false
+  xy: 648, 95
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/settings
+  rotate: false
+  xy: 515, 77
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+buttons/small
+  rotate: false
+  xy: 861, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/small_pressed
+  rotate: false
+  xy: 879, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/sound
+  rotate: false
+  xy: 615, 59
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+buttons/sound_off
+  rotate: false
+  xy: 897, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/sound_on
+  rotate: false
+  xy: 915, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/trophy
+  rotate: false
+  xy: 933, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+buttons/twitter
+  rotate: false
+  xy: 951, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+controls/control
+  rotate: false
+  xy: 670, 25
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/control_pressed
+  rotate: false
+  xy: 732, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/down
+  rotate: false
+  xy: 766, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/down_pressed
+  rotate: false
+  xy: 800, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/left
+  rotate: false
+  xy: 834, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/left_pressed
+  rotate: false
+  xy: 868, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/right
+  rotate: false
+  xy: 902, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/right_pressed
+  rotate: false
+  xy: 936, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/up
+  rotate: false
+  xy: 970, 78
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+controls/up_pressed
+  rotate: false
+  xy: 704, 25
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+heart_empty
+  rotate: false
+  xy: 470, 19
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+heart_full
+  rotate: false
+  xy: 480, 19
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+heart_half
+  rotate: false
+  xy: 490, 19
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+inventory/slot
+  rotate: false
+  xy: 576, 3
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+menus/bar_horizontal
+  rotate: false
+  xy: 424, 122
+  size: 122, 5
+  orig: 122, 5
+  offset: 0, 0
+  index: -1
+menus/character/armor_defense
+  rotate: false
+  xy: 300, 45
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/armor_resist
+  rotate: false
+  xy: 300, 28
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/armor_weight
+  rotate: false
+  xy: 732, 112
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/character_view
+  rotate: false
+  xy: 236, 27
+  size: 62, 100
+  orig: 62, 100
+  offset: 0, 0
+  index: -1
+menus/character/combat_damage
+  rotate: false
+  xy: 820, 112
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/combat_range
+  rotate: false
+  xy: 908, 112
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/combat_speed
+  rotate: false
+  xy: 300, 11
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/item_equip
+  rotate: false
+  xy: 388, 89
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/item_equipped
+  rotate: false
+  xy: 388, 72
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/item_highlight
+  rotate: false
+  xy: 554, 1
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+menus/character/item_list
+  rotate: false
+  xy: 300, 107
+  size: 122, 20
+  orig: 122, 20
+  offset: 0, 0
+  index: -1
+menus/character/item_next
+  rotate: false
+  xy: 650, 5
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+menus/character/item_previous
+  rotate: false
+  xy: 1004, 95
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+menus/character/item_unlock
+  rotate: false
+  xy: 388, 55
+  size: 86, 15
+  orig: 86, 15
+  offset: 0, 0
+  index: -1
+menus/character/item_view
+  rotate: false
+  xy: 476, 47
+  size: 37, 57
+  orig: 37, 57
+  offset: 0, 0
+  index: -1
+menus/character/special_effects
+  rotate: false
+  xy: 300, 62
+  size: 86, 43
+  orig: 86, 43
+  offset: 0, 0
+  index: -1
+menus/character/stat_health
+  rotate: false
+  xy: 424, 106
+  size: 90, 14
+  orig: 90, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_health_fill
+  rotate: false
+  xy: 286, 11
+  size: 9, 14
+  orig: 9, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_increase
+  rotate: false
+  xy: 996, 113
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_protection
+  rotate: false
+  xy: 548, 113
+  size: 90, 14
+  orig: 90, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_protection_fill
+  rotate: false
+  xy: 715, 79
+  size: 9, 14
+  orig: 9, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_strength
+  rotate: false
+  xy: 640, 113
+  size: 90, 14
+  orig: 90, 14
+  offset: 0, 0
+  index: -1
+menus/character/stat_strength_fill
+  rotate: false
+  xy: 1012, 113
+  size: 9, 14
+  orig: 9, 14
+  offset: 0, 0
+  index: -1
+menus/character/tab_armor
+  rotate: false
+  xy: 520, 41
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+menus/character/tab_combat
+  rotate: false
+  xy: 570, 41
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+menus/character/tab_special
+  rotate: false
+  xy: 570, 23
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+menus/character/tab_stats
+  rotate: false
+  xy: 620, 23
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+menus/popup_medium
+  rotate: false
+  xy: 1, 7
+  size: 233, 120
+  orig: 233, 120
+  offset: 0, 0
+  index: -1
+menus/tab
+  rotate: false
+  xy: 520, 24
+  size: 48, 15
+  orig: 48, 15
+  offset: 0, 0
+  index: -1
+menus/tab_highlight
+  rotate: false
+  xy: 620, 41
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 789, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+play
+  rotate: false
+  xy: 807, 60
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+status_bar
+  rotate: false
+  xy: 581, 77
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+status_fill_green
+  rotate: false
+  xy: 297, 9
+  size: 1, 16
+  orig: 1, 16
+  offset: 0, 0
+  index: -1
+status_fill_red
+  rotate: false
+  xy: 1022, 95
+  size: 1, 16
+  orig: 1, 16
+  offset: 0, 0
+  index: -1

@@ -32,7 +32,6 @@ import ninja.amp.engine.physics.vectors.limits.Limit;
 
 public class Bat extends NPC {
 
-    private Body body;
     private Range range;
     private Action action;
 
@@ -144,7 +143,7 @@ public class Bat extends NPC {
     @Override
     public void chooseAction() {
         setAction(new ActionList(
-                new FollowEntity(this, getWorld().getCharacter(), new Vector2(0.5f, 2.5f), 5, range),
+                new FollowEntity(this, getWorld().getCharacter(), new Vector2(0.5f, 2.5f), 4, range),
                 new Wander(this, 2, range),
                 new Stop(this, 1, true)
         ));
